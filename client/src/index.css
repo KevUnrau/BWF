@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+h2 {
+  @apply text-xl font-bold mt-2;
+}
+
+select {
+  @apply bg-gray-300 mx-1;
+}
+
+.error {
+  @apply text-red-500;
+}
+
+table,
+th,
+td {
+  @apply border-2;
+}
+
+.navbar {
+  @apply bg-gray-400 h-16 flex items-center;
+}
+
+.navbar-item {
+  @apply mr-2 p-2;
+}
+
+td.number {
+  @apply text-right;
+}
+
+td.text {
+  @apply text-left;
+}
+
+.bet-form {
+  @apply flex flex-col items-center;
+}
+
+button {
+  @apply cursor-pointer bg-gray-300;
+}
+
+input {
+  @apply bg-gray-300;
+}
+
+.bet-input {
+  @apply grid grid-cols-[1fr_60px_20px_60px_1fr] items-center gap-0.5 mb-1;
+}
+
+.away {
+  @apply text-left;
+}
+
+.home {
+  @apply text-right;
+}
+
+.colon {
+  @apply text-center;
+}
+
+.bet-card {
+  @apply border-gray-500 border border-r-2 p-1 m-2;
+}

@@ -1,0 +1,280 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["auth", "bets", "groups", "reference", "sports"]
+}
+
+model sessions {
+  id                 Int       @id(map: "sessions_pk") @default(autoincrement())
+  user_id            Int
+  refresh_token_hash String?   @unique(map: "sessions_unique_refresh_token_hash")
+  created_at         DateTime? @default(now()) @db.Timestamptz(6)
+  expires_at         DateTime? @db.Timestamptz(6)
+  revoked_at         DateTime? @db.Timestamptz(6)
+  users              users     @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "fk_sessions_user_id")
+
+  @@schema("auth")
+}
+
+model user_roles {
+  id    Int     @id(map: "user_roles_pk") @default(autoincrement())
+  name  String
+  users users[]
+
+  @@schema("auth")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model users {
+  id                                                Int              @id(map: "users_pk") @default(autoincrement())
+  username                                          String           @unique(map: "users_unique")
+  password_hash                                     String
+  mail                                              String           @unique(map: "users_unique_mail")
+  created_at                                        DateTime         @default(now()) @db.Timestamptz(6)
+  role_id                                           Int?
+  sessions                                          sessions[]
+  user_roles                                        user_roles?      @relation(fields: [role_id], references: [id], map: "fk_users_role_id")
+  bets                                              bets[]
+  standings                                         bets_standings[]
+  invitations_invitations_invited_by_user_idTousers invitations[]    @relation("invitations_invited_by_user_idTousers")
+  invitations_invitations_invited_user_idTousers    invitations[]    @relation("invitations_invited_user_idTousers")
+  members                                           members[]
+
+  @@schema("auth")
+}
+
+model bets {
+  id                 Int              @id(map: "bets_pk") @default(autoincrement())
+  match_id           Int
+  home_goals         Int?
+  away_goals         Int?
+  user_id            Int
+  betting_session_id Int
+  points             Int?
+  betting_sessions   betting_sessions @relation(fields: [betting_session_id], references: [id], onDelete: Cascade, map: "fk_bets_betting_session_id")
+  matches            matches          @relation(fields: [match_id], references: [id], onDelete: Cascade, map: "fk_bets_match_id")
+  users              users            @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "fk_bets_user_id")
+
+  @@unique([match_id, user_id, betting_session_id], map: "bets_unique")
+  @@schema("bets")
+}
+
+model betting_sessions {
+  id             Int              @id(map: "betting_sessions_pk") @default(autoincrement())
+  group_id       Int
+  competition_id Int
+  season_id      Int
+  name           String           @db.VarChar(100)
+  bets           bets[]
+  competitions   competitions     @relation(fields: [competition_id], references: [id], onDelete: Cascade, map: "fk_betting_sessions_competition_id")
+  groups         groups           @relation(fields: [group_id], references: [id], onDelete: Cascade, map: "fk_betting_sessions_group_id")
+  seasons        seasons          @relation(fields: [season_id], references: [id], onDelete: Cascade, map: "fk_betting_sessions_season_id")
+  standings      bets_standings[]
+
+  @@schema("bets")
+}
+
+model bets_standings {
+  id                 Int              @id(map: "standings_pk") @default(autoincrement())
+  betting_session_id Int
+  user_id            Int
+  points             Int
+  updated_at         DateTime         @default(now()) @db.Timestamptz(6)
+  betting_sessions   betting_sessions @relation(fields: [betting_session_id], references: [id], onDelete: Cascade, map: "fk_standings_betting_session_id")
+  users              users            @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "fk_standings_user_id")
+
+  @@map("standings")
+  @@schema("bets")
+}
+
+model groups {
+  id               Int                @id(map: "groups_pk") @default(autoincrement())
+  name             String             @db.VarChar(100)
+  created_at       DateTime           @default(now()) @db.Timestamptz(6)
+  betting_sessions betting_sessions[]
+  invitations      invitations[]
+  members          members[]
+
+  @@schema("groups")
+}
+
+model invitation_status {
+  id          Int           @id(map: "status_pk") @default(autoincrement())
+  name        String
+  invitations invitations[]
+
+  @@schema("groups")
+}
+
+model invitations {
+  id                                          Int                @id(map: "invitations_pk") @default(autoincrement())
+  group_id                                    Int
+  invited_user_id                             Int
+  invited_by_user_id                          Int?
+  status_id                                   Int?
+  created_at                                  DateTime           @default(now()) @db.Timestamptz(6)
+  responded_at                                DateTime?          @db.Timestamptz(6)
+  expires_at                                  DateTime           @default(dbgenerated("(CURRENT_TIMESTAMP + '7 days'::interval)")) @db.Timestamptz(6)
+  groups                                      groups             @relation(fields: [group_id], references: [id], onDelete: Cascade, map: "fk_invitations_group_id")
+  users_invitations_invited_by_user_idTousers users?             @relation("invitations_invited_by_user_idTousers", fields: [invited_by_user_id], references: [id], map: "fk_invitations_invited_by_user_id")
+  users_invitations_invited_user_idTousers    users              @relation("invitations_invited_user_idTousers", fields: [invited_user_id], references: [id], onDelete: Cascade, map: "fk_invitations_invited_user_id")
+  invitation_status                           invitation_status? @relation(fields: [status_id], references: [id], map: "fk_invitations_status_id")
+
+  @@schema("groups")
+}
+
+model member_roles {
+  id      Int       @id(map: "member_roles_pk") @default(autoincrement())
+  name    String
+  members members[]
+
+  @@schema("groups")
+}
+
+model members {
+  id           Int           @id(map: "members_pk") @default(autoincrement())
+  group_id     Int
+  user_id      Int
+  role_id      Int?
+  joined_at    DateTime      @default(now()) @db.Timestamptz(6)
+  groups       groups        @relation(fields: [group_id], references: [id], onDelete: Cascade, map: "fk_members_group_id")
+  member_roles member_roles? @relation(fields: [role_id], references: [id], map: "fk_members_role_id")
+  users        users         @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "fk_members_user_id")
+
+  @@schema("groups")
+}
+
+model countries {
+  code         String         @id(map: "countries_pk") @db.Char(2)
+  name         String?
+  clubs        clubs[]
+  competitions competitions[]
+  stadiums     stadiums[]
+
+  @@schema("reference")
+}
+
+model clubs {
+  id                             Int                @id(map: "clubs_pk") @default(autoincrement())
+  name                           String
+  country_id                     String?            @db.Char(2)
+  countries                      countries?         @relation(fields: [country_id], references: [code], map: "fk_clubs_country_id")
+  matches_matches_away_idToclubs matches[]          @relation("matches_away_idToclubs")
+  matches_matches_home_idToclubs matches[]          @relation("matches_home_idToclubs")
+  standings                      sports_standings[]
+
+  @@schema("sports")
+}
+
+model competition_types {
+  id           Int            @id(map: "competition_types_pk") @default(autoincrement())
+  name         String
+  competitions competitions[]
+
+  @@schema("sports")
+}
+
+model competitions {
+  id                Int                @id(map: "competitions_pk") @default(autoincrement())
+  name              String
+  country_id        String?            @db.Char(2)
+  organizer_id      Int?
+  type_id           Int?
+  betting_sessions  betting_sessions[]
+  countries         countries?         @relation(fields: [country_id], references: [code], map: "fk_competitions_country_id")
+  organizations     organizations?     @relation(fields: [organizer_id], references: [id], map: "fk_competitions_organizer_id")
+  competition_types competition_types? @relation(fields: [type_id], references: [id], map: "fk_competitions_type_id")
+  matches           matches[]
+  seasons           seasons[]
+
+  @@schema("sports")
+}
+
+model match_status {
+  id      Int       @id(map: "match_status_pk") @default(autoincrement())
+  name    String
+  matches matches[]
+
+  @@schema("sports")
+}
+
+model matches {
+  id                           Int           @id(map: "matches_pk") @default(autoincrement())
+  competition_id               Int
+  home_id                      Int
+  away_id                      Int
+  stadium_id                   Int?
+  kickoff_at                   DateTime?     @db.Timestamptz(6)
+  home_goals                   Int?
+  away_goals                   Int?
+  round                        String?
+  status_id                    Int?
+  season_id                    Int?
+  bets                         bets[]
+  clubs_matches_away_idToclubs clubs         @relation("matches_away_idToclubs", fields: [away_id], references: [id], onDelete: Cascade, map: "fk_matches_away_id")
+  competitions                 competitions  @relation(fields: [competition_id], references: [id], onDelete: Cascade, map: "fk_matches_competition_id")
+  clubs_matches_home_idToclubs clubs         @relation("matches_home_idToclubs", fields: [home_id], references: [id], onDelete: Cascade, map: "fk_matches_home_id")
+  seasons                      seasons?      @relation(fields: [season_id], references: [id], onDelete: Cascade, map: "fk_matches_season_id")
+  stadiums                     stadiums?     @relation(fields: [stadium_id], references: [id], map: "fk_matches_stadium_id")
+  match_status                 match_status? @relation(fields: [status_id], references: [id], map: "fk_matches_status_id")
+
+  @@schema("sports")
+}
+
+model organizations {
+  id           Int            @id(map: "organizations_pk") @default(autoincrement())
+  name         String
+  competitions competitions[]
+
+  @@schema("sports")
+}
+
+model seasons {
+  id               Int                @id(map: "seasons_pk") @default(autoincrement())
+  competition_id   Int?
+  name             String?
+  start_date       DateTime?          @db.Date
+  end_date         DateTime?          @db.Date
+  betting_sessions betting_sessions[]
+  matches          matches[]
+  competitions     competitions?      @relation(fields: [competition_id], references: [id], onDelete: Cascade, map: "fk_seasons_competition_id")
+  standings        sports_standings[]
+
+  @@schema("sports")
+}
+
+model stadiums {
+  id          Int        @id(map: "stadiums_pk") @default(autoincrement())
+  name        String
+  country_id  String?    @db.Char(2)
+  opened_year Int?       @db.SmallInt
+  capacity    Int?
+  city        String?
+  matches     matches[]
+  countries   countries? @relation(fields: [country_id], references: [code], map: "fk_stadiums_country_id")
+
+  @@schema("sports")
+}
+
+model sports_standings {
+  id            Int      @id(map: "standings_pk") @default(autoincrement())
+  club_id       Int
+  season_id     Int
+  played        Int?
+  wins          Int?
+  draws         Int?
+  losses        Int?
+  goals_for     Int?
+  goals_against Int?
+  points        Int?
+  updated_at    DateTime @default(now()) @db.Timestamptz(6)
+  clubs         clubs    @relation(fields: [club_id], references: [id], onDelete: Cascade, map: "fk_standings_club_id")
+  seasons       seasons  @relation(fields: [season_id], references: [id], onDelete: Cascade, map: "fk_standings_season_id")
+
+  @@map("standings")
+  @@schema("sports")
+}
