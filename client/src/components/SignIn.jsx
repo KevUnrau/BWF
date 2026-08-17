@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { fetchApiWithoutRetry } from "../api/client.js";
+import { useApi } from "../api/client.js";
 import { useAuth } from "../context/AuthContext";
 import { redirect, useNavigate } from "react-router-dom";
 
 function SignIn() {
   const [user, setUser] = useState({ mail: "", password: "" });
   const { login } = useAuth();
+  const { apiFetch } = useApi();
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -13,11 +14,15 @@ function SignIn() {
     try {
       event.preventDefault();
       const body = user;
-      const response = await fetchApiWithoutRetry("/auth/signin", {
-        method: "POST",
-        body: JSON.stringify(body),
-        credentials: "include",
-      });
+      const response = await apiFetch(
+        "/auth/signin",
+        {
+          method: "POST",
+          body: JSON.stringify(body),
+          credentials: "include",
+        },
+        false,
+      );
       login(response.user, response.token);
       setError(null);
       navigate("/profile", { replace: true });

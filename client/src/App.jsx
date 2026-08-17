@@ -8,18 +8,23 @@ import Homepage from "./pages/Homepage";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import { Children, useEffect } from "react";
-import { fetchApiWithoutRetry } from "./api/client.js";
+import { useApi } from "./api/client.js";
 import { useAuth } from "./context/AuthContext.jsx";
 
 function App() {
   const { login } = useAuth();
+  const { apiFetch } = useApi();
   useEffect(() => {
     async function auth() {
       try {
-        const response = await fetchApiWithoutRetry("/auth/refresh", {
-          method: "POST",
-          credentials: "include",
-        });
+        const response = await apiFetch(
+          "/auth/refresh",
+          {
+            method: "POST",
+            credentials: "include",
+          },
+          false,
+        );
 
         login(response.user, response.token);
       } catch (error) {
