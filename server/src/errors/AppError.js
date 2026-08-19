@@ -30,3 +30,9 @@ export class ConflictError extends AppError {
     super(`${resource} already exists.`, 409);
   }
 }
+
+export class ValidationError extends AppError {
+  constructor(message = "Input validation failed.") {
+    super(message, 400);
+  }
+}

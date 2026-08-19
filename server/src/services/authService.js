@@ -115,6 +115,5 @@ export async function refresh(refreshToken) {
 
 export async function verifyToken(accessToken) {
   const tokenValid = await jwtVerify(accessToken, accessSecret);
-  console.log(tokenValid);
   return tokenValid;
 }

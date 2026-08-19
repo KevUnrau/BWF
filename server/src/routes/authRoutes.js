@@ -1,9 +1,10 @@
 import { Router } from "express";
 import * as authController from "../controllers/authController.js";
+import { validate, userValidation } from "../middleware/validate.js";
 
 const router = Router();
 
-router.post("/signup", authController.signUp);
+router.post("/signup", validate(userValidation), authController.signUp);
 
 router.post("/signin", authController.signIn);
 
