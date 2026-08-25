@@ -34,6 +34,8 @@ function BetForm({
   const [betExists, setBetExists] = useState(false);
   const [edit, setEdit] = useState(false);
   const [bets, setBets] = useState();
+  const [submitBetError, setSubmitBetError] = useState(null);
+  const [submitSuccess, setSubmitSuccess] = useState(null);
   const { token } = useAuth();
   const { apiFetch } = useApi();
 
@@ -43,6 +45,8 @@ function BetForm({
         setLoading(true);
         setBetExists(false);
         setEdit(false);
+        setSubmitBetError(null);
+        setSubmitSuccess(null);
         const [matches, bets] = await Promise.all([
           apiFetch(
             `/matches?competitionId=${competitionId}&seasonId=${seasonId}&round=${matchday}`,
@@ -79,12 +83,12 @@ function BetForm({
         setLoading(false);
       }
     }
-    if (matchday == null) {
+    if (!(matchday && bettingSessionId)) {
       return;
     } else {
       fetchMatches();
     }
-  }, [matchday]);
+  }, [matchday, competitionId, seasonId, bettingSessionId, userId]);
 
   function handleBetChange(event, id) {
     const updatedBets = bets.map((bet) => {
@@ -109,88 +113,115 @@ function BetForm({
     setBets(updatedBets);
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
     const body = { userId: userId, bettingSessionId: bettingSessionId, bets };
-    apiFetch("/bets", {
-      method: "PUT",
-      body: JSON.stringify(body),
-    });
-  }
-
-  let betInputs;
-  if (!loading) {
-    let lastKickoff;
-    betInputs = matches.map((match) => {
-      const showHeader = match.kickoff_at !== lastKickoff;
-      lastKickoff = match.kickoff_at;
-      const bet = bets.find((bet) => {
-        return bet.match_id === match.id;
+    try {
+      await apiFetch("/bets", {
+        method: "PUT",
+        body: JSON.stringify(body),
       });
-      return (
-        <Fragment key={match.id}>
-          {showHeader && <p>{formatKickoff(new Date(lastKickoff))}</p>}
-          <BetInput
-            match={match}
-            bet={bet}
-            handleChange={handleBetChange}
-            isDisabled={edit ? false : true}
-          ></BetInput>
-        </Fragment>
-      );
-    });
+      setSubmitBetError(null);
+      setEdit(false);
+      setSubmitSuccess("Bet sent.");
+      setBetExists(true);
+    } catch (error) {
+      setSubmitBetError(error.message);
+    }
   }
 
-  let content;
+  if (!matchday) {
+    return <p>Please select a matchday to view matches.</p>;
+  }
+
+  if (!bettingSessionId) {
+    return <p>Please select a betting session to view matches.</p>;
+  }
+
   if (loading) {
-    content = <p>loading...</p>;
-  } else if (error) {
-    content = <p className="error">Failed to fetch matches.</p>;
-  } else {
-    if (!betExists) {
-      content = (
+    return <p>loading...</p>;
+  }
+
+  if (error) {
+    return <p className="error">Failed to fetch matches.</p>;
+  }
+
+  if (!matches || matches.length === 0) {
+    return <p>No matches found for matchday {matchday}.</p>;
+  }
+
+  const betInputs = matches.map((match) => {
+    let lastKickoff;
+    const showHeader = match.kickoff_at !== lastKickoff;
+    lastKickoff = match.kickoff_at;
+    const bet = bets.find((bet) => {
+      return bet.match_id === match.id;
+    });
+    return (
+      <Fragment key={match.id}>
+        {showHeader && <p>{formatKickoff(new Date(lastKickoff))}</p>}
+        <BetInput
+          match={match}
+          bet={bet}
+          handleChange={handleBetChange}
+          isDisabled={edit ? false : true}
+        ></BetInput>
+      </Fragment>
+    );
+  });
+
+  if (!betExists) {
+    return (
+      <div className="bet-form">
         <form className="bet-form" onSubmit={handleSubmit}>
           {betInputs}
           <button type="submit">Submit bet</button>
         </form>
+        {submitBetError ? (
+          <p className="error">Submit bet failed due to: {submitBetError}</p>
+        ) : undefined}
+      </div>
+    );
+  } else {
+    if (!edit) {
+      return (
+        <div className="bet-form">
+          <form className="bet-form">{betInputs}</form>
+          <button
+            type="button"
+            onClick={(event) => {
+              setEdit(true);
+            }}
+          >
+            Edit
+          </button>
+          {submitSuccess ? (
+            <p className="text-green-800">{submitSuccess}</p>
+          ) : undefined}
+        </div>
       );
     } else {
-      if (!edit) {
-        content = (
-          <div className="bet-form">
-            <form className="bet-form">{betInputs}</form>
-            <button
-              type="button"
-              onClick={(event) => {
-                setEdit(true);
-              }}
-            >
-              Edit
-            </button>
-          </div>
-        );
-      } else {
-        content = (
-          <div className="bet-form">
-            <form className="bet-form" onSubmit={handleSubmit}>
-              {betInputs}
-              <button type="submit">Update bet</button>
-            </form>
-            <button
-              type="button"
-              onClick={() => {
-                setEdit(false);
-              }}
-            >
-              Cancel
-            </button>
-          </div>
-        );
-      }
+      return (
+        <div className="bet-form">
+          <form className="bet-form" onSubmit={handleSubmit}>
+            {betInputs}
+            <button type="submit">Update bet</button>
+          </form>
+          <button
+            type="button"
+            onClick={() => {
+              setEdit(false);
+            }}
+          >
+            Cancel
+          </button>
+          {submitBetError ? (
+            <p className="error">Update bet failed due to: {submitBetError}</p>
+          ) : undefined}
+        </div>
+      );
     }
   }
-
-  return content;
 }
 
 export default BetForm;

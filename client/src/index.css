@@ -65,3 +65,7 @@ input {
 .bet-card {
   @apply border-gray-500 border border-r-2 p-1 m-2;
 }
+
+section {
+  @apply py-2;
+}

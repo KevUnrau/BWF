@@ -5,12 +5,18 @@ export const getCompetitions = (req, res) => {
 };
 
 export const getMatchdays = async (req, res) => {
-  const status = req.query.status;
+  let status;
+  if (req.query.status === "open") {
+    status = [1, 3];
+  } else {
+    status = [2];
+  }
   const competitionId = Number(req.params.competitionId);
   const seasonId = Number(req.params.seasonId);
   const matchdays = await competitionService.getRounds({
     competitionId,
     seasonId,
+    status,
   });
   res.send(matchdays);
 };

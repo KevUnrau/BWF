@@ -12,9 +12,14 @@ export function findCurrentRound(competitionId) {
   });
 }
 
-export function findRounds({ competitionId, seasonId }) {
+export function findRounds({ competitionId, seasonId, status }) {
   return prisma.matches.findMany({
-    where: { competition_id: competitionId, season_id: seasonId },
+    where: {
+      AND: [{ competition_id: competitionId }, { season_id: seasonId }],
+      OR: status.map((status) => {
+        return { status_id: status };
+      }),
+    },
     distinct: ["round"],
     select: {
       round: true,

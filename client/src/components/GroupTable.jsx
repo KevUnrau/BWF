@@ -1,45 +1,45 @@
 import { useEffect, useState } from "react";
 import GroupTableRow from "./GroupTableRow";
-import { useApi } from "../api/client";
+import { useFetchData } from "../hooks/useFetchData";
 
 function GroupTable({ bettingSessionId }) {
-  const [standings, setStandings] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const { apiFetch } = useApi();
+  const {
+    data: standings,
+    loading,
+    error,
+  } = useFetchData(
+    bettingSessionId
+      ? `/bets/standings?bettingSessionId=${bettingSessionId}`
+      : null,
+  );
 
-  useEffect(() => {
-    async function fetchMatches() {
-      try {
-        const standings = await apiFetch(
-          `/bets/standings?bettingSessionId=${bettingSessionId}`,
-        );
-        setStandings(
-          standings.sort((a, b) => {
-            if (a.points > b.points) {
-              return -1;
-            } else if (a.points < b.points) {
-              return 1;
-            } else {
-              return 0;
-            }
-          }),
-        );
-        setError(null);
-      } catch (error) {
-        setError(error);
-      } finally {
-        setLoading(false);
+  if (!bettingSessionId) {
+    return <p>Please select a betting session to view standings.</p>;
+  }
+
+  if (loading) {
+    return <p>loading...</p>;
+  }
+
+  if (error) {
+    return <p className="error">Failed to fetch standings.</p>;
+  }
+
+  if (!standings || standings.length === 0) {
+    return <p>No standings available.</p>;
+  }
+
+  const tableRows = standings
+    .sort((a, b) => {
+      if (a.points > b.points) {
+        return -1;
+      } else if (a.points < b.points) {
+        return 1;
+      } else {
+        return 0;
       }
-    }
-    if (bettingSessionId) {
-      fetchMatches();
-    }
-  }, [bettingSessionId]);
-
-  let tableRows;
-  if (!loading) {
-    tableRows = standings.map((standing, index) => {
+    })
+    .map((standing, index) => {
       return (
         <GroupTableRow
           standing={standing}
@@ -48,26 +48,19 @@ function GroupTable({ bettingSessionId }) {
         ></GroupTableRow>
       );
     });
-  }
 
-  if (loading) {
-    return <p>loading...</p>;
-  } else if (error) {
-    return <p className="error">Failed to fetch standings.</p>;
-  } else {
-    return (
-      <table className="table-fixed border-collapse">
-        <thead>
-          <tr>
-            <th>Pos</th>
-            <th>Username</th>
-            <th>Pts</th>
-          </tr>
-        </thead>
-        <tbody>{tableRows}</tbody>
-      </table>
-    );
-  }
+  return (
+    <table className="table-fixed border-collapse">
+      <thead>
+        <tr>
+          <th>Pos</th>
+          <th>Username</th>
+          <th>Pts</th>
+        </tr>
+      </thead>
+      <tbody>{tableRows}</tbody>
+    </table>
+  );
 }
 
 export default GroupTable;
