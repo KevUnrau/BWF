@@ -182,46 +182,44 @@ function BetForm({
         ) : undefined}
       </div>
     );
-  } else {
-    if (!edit) {
-      return (
-        <div className="bet-form">
-          <form className="bet-form">{betInputs}</form>
-          <button
-            type="button"
-            onClick={(event) => {
-              setEdit(true);
-            }}
-          >
-            Edit
-          </button>
-          {submitSuccess ? (
-            <p className="text-green-800">{submitSuccess}</p>
-          ) : undefined}
-        </div>
-      );
-    } else {
-      return (
-        <div className="bet-form">
-          <form className="bet-form" onSubmit={handleSubmit}>
-            {betInputs}
-            <button type="submit">Update bet</button>
-          </form>
-          <button
-            type="button"
-            onClick={() => {
-              setEdit(false);
-            }}
-          >
-            Cancel
-          </button>
-          {submitBetError ? (
-            <p className="error">Update bet failed due to: {submitBetError}</p>
-          ) : undefined}
-        </div>
-      );
-    }
   }
+  if (!edit) {
+    return (
+      <div className="bet-form">
+        <form className="bet-form">{betInputs}</form>
+        <button
+          type="button"
+          onClick={(event) => {
+            setEdit(true);
+          }}
+        >
+          Edit
+        </button>
+        {submitSuccess ? (
+          <p className="text-green-800">{submitSuccess}</p>
+        ) : undefined}
+      </div>
+    );
+  }
+  return (
+    <div className="bet-form">
+      <form className="bet-form" onSubmit={handleSubmit}>
+        {betInputs}
+        <button type="submit">Update bet</button>
+      </form>
+      <button
+        type="button"
+        onClick={() => {
+          setEdit(false);
+        }}
+      >
+        Cancel
+      </button>
+      {submitBetError ? (
+        <p className="error">Update bet failed due to: {submitBetError}</p>
+      ) : undefined}
+    </div>
+  );
 }
 
 export default BetForm;
