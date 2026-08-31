@@ -36,6 +36,7 @@ function BetForm({
   const [bets, setBets] = useState();
   const [submitBetError, setSubmitBetError] = useState(null);
   const [submitSuccess, setSubmitSuccess] = useState(null);
+  const [betSending, setBetSending] = useState(false);
   const { token } = useAuth();
   const { apiFetch } = useApi();
 
@@ -117,6 +118,7 @@ function BetForm({
     event.preventDefault();
     const body = { userId: userId, bettingSessionId: bettingSessionId, bets };
     try {
+      setBetSending(true);
       await apiFetch("/bets", {
         method: "PUT",
         body: JSON.stringify(body),
@@ -127,6 +129,8 @@ function BetForm({
       setBetExists(true);
     } catch (error) {
       setSubmitBetError(error.message);
+    } finally {
+      setBetSending(false);
     }
   }
 
@@ -175,7 +179,9 @@ function BetForm({
       <div className="bet-form">
         <form className="bet-form" onSubmit={handleSubmit}>
           {betInputs}
-          <button type="submit">Submit bet</button>
+          <button type="submit" disabled={betSending ? true : false}>
+            Submit bet
+          </button>
         </form>
         {submitBetError ? (
           <p className="error">Submit bet failed due to: {submitBetError}</p>
@@ -190,6 +196,7 @@ function BetForm({
         <button
           type="button"
           onClick={(event) => {
+            setSubmitSuccess(null);
             setEdit(true);
           }}
         >
@@ -205,11 +212,14 @@ function BetForm({
     <div className="bet-form">
       <form className="bet-form" onSubmit={handleSubmit}>
         {betInputs}
-        <button type="submit">Update bet</button>
+        <button type="submit" disabled={betSending ? true : false}>
+          Update bet
+        </button>
       </form>
       <button
         type="button"
         onClick={() => {
+          setSubmitBetError(null);
           setEdit(false);
         }}
       >
