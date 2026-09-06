@@ -20,7 +20,7 @@ function Navbar() {
           <Link to={"/group"}>Groups</Link>
         </li>
         <li id="mail" className="navbar-item ml-auto">
-          <a href="">📥</a>
+          <Link to={"/notifications"}>📥</Link>
         </li>
         <li id="signout" className="navbar-item">
           <button

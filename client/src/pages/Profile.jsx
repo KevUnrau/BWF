@@ -3,13 +3,11 @@ import SignUp from "../components/SignUp";
 
 function Profile() {
   const { user } = useAuth();
-  return user?.username ? (
-    <>
-      <p>Hello {user.username}</p>
-    </>
-  ) : (
-    <SignUp></SignUp>
-  );
+
+  if (!user) {
+    return <p>Please sign in to view your profile.</p>;
+  }
+  return <p>Hello {user.username}</p>;
 }
 
 export default Profile;

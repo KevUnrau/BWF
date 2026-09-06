@@ -10,4 +10,6 @@ router.get("/", groupController.getGroupsByUser);
 
 router.get("/:groupId/sessions", groupController.getSessions);
 
+router.put("/invitations/response", groupController.putInvitationsResponse);
+
 export default router;

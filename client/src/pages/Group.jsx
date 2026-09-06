@@ -23,17 +23,14 @@ function Group() {
   const [selectedPreviousMatchday, setSelectedPreviousMatchday] = useState("");
   const [selectedBetMatchday, setSelectedBetMatchday] = useState("");
   const [selectedGroup, setSelectedGroup] = useState("");
-  const [initGroup, setInitGroup] = useState(false);
   const [selectedBettingSession, setSelectedBettingSession] = useState("");
-  const [initBettingSession, setInitBettingSession] = useState(false);
 
   if (!user) {
-    return;
+    return <p>Please sign in to view your groups.</p>;
   }
 
   function handleGroupSelection(group) {
     setSelectedBettingSession("");
-    setInitBettingSession(false);
     setSelectedGroup(group);
   }
 

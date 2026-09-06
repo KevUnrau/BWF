@@ -12,6 +12,9 @@ function SessionSelection({ selectedGroup, changeHandler, selectedSession }) {
     if (selectedGroup && sessions && sessions.length === 1) {
       changeHandler(sessions[0]);
     }
+    if (!sessions || sessions.length === 0) {
+      changeHandler("");
+    }
   }, [selectedGroup, sessions]);
 
   if (!selectedGroup) {
