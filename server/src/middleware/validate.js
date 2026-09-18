@@ -1,5 +1,7 @@
 import { body, validationResult } from "express-validator";
 import { ValidationError } from "../errors/AppError.js";
+import * as authRepository from "../repositories/authRepository.js";
+import * as groupRepository from "../repositories/groupRepository.js";
 
 export const validate = (validations) => {
   return async (req, res, next) => {
@@ -47,4 +49,23 @@ const goalValidationChain = (field) => {
 export const betValidation = [
   goalValidationChain("bets.*.home_goals"),
   goalValidationChain("bets.*.away_goals"),
+];
+
+export const invitationValidation = [
+  body("invited").custom(async (value, { req }) => {
+    const user = await authRepository.findUserByName(value);
+    if (!user) {
+      throw new Error("User does not exist.");
+    }
+    if (user.id === req.body.invitedBy) {
+      throw new Error("You can't invite yourself.");
+    }
+    const groups = await groupRepository.findGroupsByUser(user.id);
+    const isMember = groups.find((group) => {
+      return group.group_id === req.body.groupId;
+    });
+    if (isMember) {
+      throw new Error(`${value} is already a member of this group.`);
+    }
+  }),
 ];

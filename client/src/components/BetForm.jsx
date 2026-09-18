@@ -1,6 +1,5 @@
 import BetInput from "./BetInput";
 import { useEffect, useState, Fragment } from "react";
-import { useAuth } from "../context/AuthContext";
 import { useApi } from "../api/client";
 
 function formatKickoff(timestamp) {
@@ -21,13 +20,7 @@ function formatKickoff(timestamp) {
   );
 }
 
-function BetForm({
-  userId,
-  bettingSessionId,
-  competitionId,
-  seasonId,
-  matchday,
-}) {
+function BetForm({ bettingSessionId, matchday }) {
   const [error, setError] = useState(null);
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -37,7 +30,6 @@ function BetForm({
   const [submitBetError, setSubmitBetError] = useState(null);
   const [submitSuccess, setSubmitSuccess] = useState(null);
   const [betSending, setBetSending] = useState(false);
-  const { token } = useAuth();
   const { apiFetch } = useApi();
 
   useEffect(() => {
@@ -49,12 +41,8 @@ function BetForm({
         setSubmitBetError(null);
         setSubmitSuccess(null);
         const [matches, bets] = await Promise.all([
-          apiFetch(
-            `/matches?competitionId=${competitionId}&seasonId=${seasonId}&round=${matchday}`,
-          ),
-          apiFetch(
-            `/bets?userId=${userId}&bettingSessionId=${bettingSessionId}&round=${matchday}`,
-          ),
+          apiFetch(`/session/${bettingSessionId}/matches?round=${matchday}`),
+          apiFetch(`/session/${bettingSessionId}/bets?&round=${matchday}`),
         ]);
         matches.sort((a, b) => {
           if (a.kickoff_at < b.kickoff_at) {
@@ -89,7 +77,7 @@ function BetForm({
     } else {
       fetchMatches();
     }
-  }, [matchday, competitionId, seasonId, bettingSessionId, userId]);
+  }, [matchday, bettingSessionId]);
 
   function handleBetChange(event, id) {
     const updatedBets = bets.map((bet) => {

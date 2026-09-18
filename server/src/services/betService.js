@@ -1,9 +1,9 @@
 import * as betRepository from "../repositories/betRepository.js";
 
-export function getBets({ userId, bettingSessionId, round, includeMatches }) {
+export function getBets({ userId, sessionId, round, includeMatches }) {
   return betRepository.findBets({
     userId,
-    bettingSessionId,
+    sessionId,
     round,
     includeMatches,
   });

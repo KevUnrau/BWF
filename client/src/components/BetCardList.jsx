@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import BetCard from "./BetCard";
 import { useFetchData } from "../hooks/useFetchData.js";
 
-function BetCardList({ matchday, userId, bettingSessionId }) {
+function BetCardList({ matchday, bettingSessionId }) {
   const {
     data: bets,
     loading,
     error,
   } = useFetchData(
-    matchday && userId && bettingSessionId
-      ? `/bets?userId=${userId}&bettingSessionId=${bettingSessionId}&round=${matchday}&include=matches`
+    matchday && bettingSessionId
+      ? `/bets?bettingSessionId=${bettingSessionId}&round=${matchday}&include=matches`
       : null,
   );
 

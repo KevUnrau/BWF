@@ -42,6 +42,21 @@ export function findUserByMail(mail) {
   });
 }
 
+export function findUserByName(username) {
+  return prisma.users.findFirst({
+    select: {
+      id: true,
+      username: true,
+      password_hash: true,
+      mail: true,
+      role_id: true,
+    },
+    where: {
+      username: username,
+    },
+  });
+}
+
 export function revokeSession(refreshTokenHash) {
   return prisma.sessions.update({
     where: {

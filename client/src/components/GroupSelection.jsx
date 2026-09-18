@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import { useFetchData } from "../hooks/useFetchData";
 
-function GroupSelection({ changeHandler, selectedGroup }) {
+function GroupSelection({ selectedGroup }) {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   //fetch data
   const {
@@ -11,12 +12,6 @@ function GroupSelection({ changeHandler, selectedGroup }) {
     error,
     loading,
   } = useFetchData(user ? `/groups?userId=${user.id}` : null);
-
-  useEffect(() => {
-    if (groups && groups.length === 1) {
-      changeHandler(groups[0].group_id);
-    }
-  }, [groups]);
 
   if (!user) {
     return;
@@ -47,10 +42,15 @@ function GroupSelection({ changeHandler, selectedGroup }) {
       <label htmlFor="select-group">Please select a group:</label>
       <select
         id="select-group"
-        value={selectedGroup}
         onChange={(event) => {
-          changeHandler(event.target.value);
+          const groupId = event.target.value;
+          if (groupId) {
+            navigate(`/group/${groupId}`);
+          } else {
+            navigate("/groups");
+          }
         }}
+        value={selectedGroup ? selectedGroup : ""}
       >
         <option key={"group-null"} value={""}>
           --Group--

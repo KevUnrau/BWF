@@ -1,10 +1,10 @@
 import prisma from "../prisma/client.js";
 
-export function findBets({ userId, bettingSessionId, round, includeMatches }) {
+export function findBets({ userId, sessionId, round, includeMatches }) {
   return prisma.bets.findMany({
     where: {
       user_id: userId,
-      betting_session_id: bettingSessionId,
+      betting_session_id: sessionId,
       matches: {
         round: round,
       },

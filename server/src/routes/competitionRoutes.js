@@ -10,9 +10,4 @@ router.get(
   competitionController.getCurrentMatchday,
 );
 
-router.get(
-  "/:competitionId/seasons/:seasonId/matchdays",
-  competitionController.getMatchdays,
-);
-
 export default router;

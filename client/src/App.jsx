@@ -1,10 +1,11 @@
-import reactLogo from "./assets/react.svg";
-import viteLogo from "./assets/vite.svg";
-import heroImg from "./assets/hero.png";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
-import Group from "./pages/Group";
+import GroupLayout from "./layouts/GroupLayout.jsx";
+import SessionLayout from "./layouts/SessionLayout.jsx";
+import GroupSettings from "./pages/GroupSettings.jsx";
+import GroupStandings from "./pages/GroupStandings.jsx";
 import Homepage from "./pages/Homepage";
+import GroupMatches from "./pages/GroupMatches.jsx";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import Notification from "./pages/Notification.jsx";
@@ -39,7 +40,27 @@ function App() {
       <Routes>
         <Route element={<MainLayout></MainLayout>}>
           <Route path="/" element={<Homepage></Homepage>}></Route>
-          <Route path="/group" element={<Group></Group>}></Route>
+          <Route path="/groups" element={<GroupLayout></GroupLayout>}></Route>
+          <Route path="/group" element={<GroupLayout></GroupLayout>}>
+            <Route path=":groupId" element={null}></Route>
+            <Route
+              path=":groupId/session/:sessionId"
+              element={<SessionLayout></SessionLayout>}
+            >
+              <Route
+                path="standings"
+                element={<GroupStandings></GroupStandings>}
+              ></Route>
+              <Route
+                path="matches"
+                element={<GroupMatches></GroupMatches>}
+              ></Route>
+              <Route
+                path="settings"
+                element={<GroupSettings></GroupSettings>}
+              ></Route>
+            </Route>
+          </Route>
           <Route path="/auth" element={<Auth signUp={false}></Auth>}></Route>
           <Route path="/profile" element={<Profile></Profile>}></Route>
           <Route

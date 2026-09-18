@@ -1,19 +1,16 @@
-import { useEffect, useState } from "react";
 import GroupTableRow from "./GroupTableRow";
 import { useFetchData } from "../hooks/useFetchData";
 
-function GroupTable({ bettingSessionId }) {
+function GroupTable({ sessionId }) {
   const {
     data: standings,
     loading,
     error,
   } = useFetchData(
-    bettingSessionId
-      ? `/bets/standings?bettingSessionId=${bettingSessionId}`
-      : null,
+    sessionId ? `/bets/standings?bettingSessionId=${sessionId}` : null,
   );
 
-  if (!bettingSessionId) {
+  if (!sessionId) {
     return <p>Please select a betting session to view standings.</p>;
   }
 

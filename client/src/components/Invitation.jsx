@@ -49,6 +49,18 @@ function Invitation({
     );
   }
 
+  if (new Date() > expiresDate) {
+    return (
+      <div className="flex border rounded-sm p-1 m-1">
+        <p>
+          {invitedBy} asked you to join Group {groupName} on{" "}
+          {createdDate.toDateString()}. Invitation expired on{" "}
+          {expiresDate.toDateString()}.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex border rounded-sm p-1 m-1">
       <p>

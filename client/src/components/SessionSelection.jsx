@@ -1,21 +1,13 @@
-import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import { useFetchData } from "../hooks/useFetchData";
 
-function SessionSelection({ selectedGroup, changeHandler, selectedSession }) {
+function SessionSelection({ selectedGroup, selectedSession }) {
+  const navigate = useNavigate();
   const {
     data: sessions,
     error,
     loading,
   } = useFetchData(selectedGroup ? `/groups/${selectedGroup}/sessions` : null);
-
-  useEffect(() => {
-    if (selectedGroup && sessions && sessions.length === 1) {
-      changeHandler(sessions[0]);
-    }
-    if (!sessions || sessions.length === 0) {
-      changeHandler("");
-    }
-  }, [selectedGroup, sessions]);
 
   if (!selectedGroup) {
     return <p>Please select a group to view betting sessions.</p>;
@@ -46,16 +38,15 @@ function SessionSelection({ selectedGroup, changeHandler, selectedSession }) {
       <label htmlFor="select-session">Please select a session:</label>
       <select
         id="select-session"
-        value={selectedSession}
         onChange={(event) => {
-          changeHandler(
-            event.target.value
-              ? sessions.find((session) => {
-                  return session.id === Number(event.target.value);
-                })
-              : "",
-          );
+          const sessionId = event.target.value;
+          if (sessionId) {
+            navigate(`/group/${selectedGroup}/session/${sessionId}`);
+          } else {
+            navigate(`/group/${selectedGroup}`);
+          }
         }}
+        value={selectedSession ? selectedSession : ""}
       >
         <option value="" key="session-null">
           --Session--

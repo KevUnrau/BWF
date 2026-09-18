@@ -4,7 +4,6 @@ import * as argon2 from "argon2";
 import env from "../config/env.js";
 import { InvalidCredentialsError, NotFoundError } from "../errors/AppError.js";
 import crypto from "node:crypto";
-import console from "node:console";
 
 const accessSecret = new TextEncoder().encode(env.jwtAccessSecret);
 const refreshSecret = new TextEncoder().encode(env.jwtRefreshSecret);
@@ -82,12 +81,12 @@ export async function refresh(refreshToken) {
     const [token, refreshToken] = await Promise.all([
       new SignJWT({})
         .setProtectedHeader({ alg: "HS256" })
-        .setSubject(tokenClaims.userId)
+        .setSubject(tokenClaims.users.id)
         .setExpirationTime("15m")
         .sign(accessSecret),
       new SignJWT({})
         .setProtectedHeader({ alg: "HS256" })
-        .setSubject(tokenClaims.userId)
+        .setSubject(tokenClaims.users.id)
         .setIssuedAt()
         .setExpirationTime("30d")
         .sign(refreshSecret),

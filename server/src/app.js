@@ -10,6 +10,7 @@ import standingsRoutes from "./routes/standingsRoutes.js";
 import groupRoutes from "./routes/groupRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import sessionRoutes from "./routes/sessionRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
 import { NotFoundError } from "./errors/AppError.js";
 
@@ -33,6 +34,7 @@ app.use("/standings", standingsRoutes);
 app.use("/groups", groupRoutes);
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
+app.use("/session", sessionRoutes);
 
 // Fallback for Unmatched Routes
 app.all("{*path}", (req, res, next) => {

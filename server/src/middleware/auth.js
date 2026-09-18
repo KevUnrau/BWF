@@ -15,7 +15,8 @@ export async function auth(req, res, next) {
       throw new InvalidCredentialsError();
     }
 
-    await verifyToken(token);
+    const { payload } = await verifyToken(token);
+    req.user = payload.sub;
   } catch (error) {
     if ((error.code = "ERR_JWT_EXPIRED")) {
       error = new TokenExpiredError();

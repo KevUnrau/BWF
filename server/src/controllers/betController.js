@@ -1,13 +1,13 @@
 import * as betService from "../services/betService.js";
 
 export const getBets = async (req, res) => {
-  const userId = Number(req.query.userId);
-  const bettingSessionId = Number(req.query.bettingSessionId);
+  const userId = req.user;
+  const sessionId = Number(req.query.bettingSessionId);
   const round = req.query.round;
   const includeMatches = req.query.include?.includes("matches");
   const bets = await betService.getBets({
     userId,
-    bettingSessionId,
+    sessionId,
     round,
     includeMatches,
   });

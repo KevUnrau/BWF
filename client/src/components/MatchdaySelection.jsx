@@ -13,9 +13,7 @@ function MatchdaySelection({
     error,
     loading,
   } = useFetchData(
-    session
-      ? `/competitions/${session.competition_id}/seasons/${session.season_id}/matchdays?status=${status}`
-      : null,
+    session ? `/session/${session}/matchdays?status=${status}` : null,
   );
 
   useEffect(() => {

@@ -33,9 +33,15 @@ export const putInvitationsResponse = async (req, res, next) => {
   } else {
     try {
       await groupRepository.updateInvitation(body.invitationId, "decline");
-      res.send(body);
+      res.status(200).send({
+        message: "OK",
+      });
     } catch (error) {
       next(error);
     }
   }
+};
+
+export const postInvitation = (req, res) => {
+  res.send({ message: "NOT IMPLEMENTED YET." });
 };
