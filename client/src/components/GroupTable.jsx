@@ -6,9 +6,7 @@ function GroupTable({ sessionId }) {
     data: standings,
     loading,
     error,
-  } = useFetchData(
-    sessionId ? `/bets/standings?bettingSessionId=${sessionId}` : null,
-  );
+  } = useFetchData(sessionId ? `/sessions/${sessionId}/standings` : null);
 
   if (!sessionId) {
     return <p>Please select a betting session to view standings.</p>;

@@ -1,4 +1,3 @@
-import { token } from "morgan";
 import * as authService from "../services/authService.js";
 import env from "../config/env.js";
 

@@ -12,4 +12,6 @@ router.get("/:id/bets", sessionController.getBets);
 
 router.get("/:id/matches", sessionController.getMatches);
 
+router.get("/:id/standings", sessionController.getStandings);
+
 export default router;

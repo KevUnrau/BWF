@@ -41,8 +41,8 @@ function BetForm({ bettingSessionId, matchday }) {
         setSubmitBetError(null);
         setSubmitSuccess(null);
         const [matches, bets] = await Promise.all([
-          apiFetch(`/session/${bettingSessionId}/matches?round=${matchday}`),
-          apiFetch(`/session/${bettingSessionId}/bets?&round=${matchday}`),
+          apiFetch(`/sessions/${bettingSessionId}/matches?round=${matchday}`),
+          apiFetch(`/sessions/${bettingSessionId}/bets?&round=${matchday}`),
         ]);
         matches.sort((a, b) => {
           if (a.kickoff_at < b.kickoff_at) {

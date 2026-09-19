@@ -40,7 +40,6 @@ function App() {
       <Routes>
         <Route element={<MainLayout></MainLayout>}>
           <Route path="/" element={<Homepage></Homepage>}></Route>
-          <Route path="/groups" element={<GroupLayout></GroupLayout>}></Route>
           <Route path="/group" element={<GroupLayout></GroupLayout>}>
             <Route path=":groupId" element={null}></Route>
             <Route

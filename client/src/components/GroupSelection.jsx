@@ -11,7 +11,7 @@ function GroupSelection({ selectedGroup }) {
     data: groups,
     error,
     loading,
-  } = useFetchData(user ? `/groups?userId=${user.id}` : null);
+  } = useFetchData(user ? `/groups` : null);
 
   if (!user) {
     return;
@@ -47,7 +47,7 @@ function GroupSelection({ selectedGroup }) {
           if (groupId) {
             navigate(`/group/${groupId}`);
           } else {
-            navigate("/groups");
+            navigate("/group");
           }
         }}
         value={selectedGroup ? selectedGroup : ""}

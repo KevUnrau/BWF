@@ -23,7 +23,7 @@ function Invitation({
       userId: userId,
     };
     try {
-      await apiFetch("/groups/invitations/response", {
+      await apiFetch("/invitations/response", {
         method: "PUT",
         body: JSON.stringify(body),
       });

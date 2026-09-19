@@ -1,10 +1,5 @@
 import { Prisma } from "@prisma/client";
-import {
-  AppError,
-  ConflictError,
-  NotFoundError,
-  InvalidCredentialsError,
-} from "../errors/AppError.js";
+import { AppError, ConflictError, NotFoundError } from "../errors/AppError.js";
 function errorHandler(err, req, res, next) {
   let error = err;
   if (error instanceof Prisma.PrismaClientKnownRequestError) {

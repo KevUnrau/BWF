@@ -1,4 +1,4 @@
-import { body, validationResult } from "express-validator";
+import { body } from "express-validator";
 import { ValidationError } from "../errors/AppError.js";
 import * as authRepository from "../repositories/authRepository.js";
 import * as groupRepository from "../repositories/groupRepository.js";

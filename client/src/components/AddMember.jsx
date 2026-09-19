@@ -7,7 +7,7 @@ function AddMember({ currentUserId, groupId }) {
   async function handleSubmit(username) {
     try {
       const body = { invited: username, invitedBy: currentUserId, groupId };
-      await apiFetch(`/groups/${groupId}/invitation`, {
+      await apiFetch(`/invitations`, {
         method: "POST",
         body: JSON.stringify(body),
       });

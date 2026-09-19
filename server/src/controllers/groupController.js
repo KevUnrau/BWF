@@ -1,47 +1,15 @@
-import * as groupService from "../services/groupServices.js";
-import * as betService from "../services/betService.js";
+import * as betRepository from "../repositories/betRepository.js";
 import * as groupRepository from "../repositories/groupRepository.js";
 
 export const getGroupsByUser = async (req, res) => {
-  const userId = Number(req.query.userId);
-  const groups = await groupService.getGroupsByUser(userId);
+  const userId = Number(req.user);
+  const groups = await groupRepository.findGroupsByUser(userId);
 
   res.send(groups);
 };
 
-export const getSessions = async (req, res) => {
+export const getSessionsByGroup = async (req, res) => {
   const groupId = Number(req.params.groupId);
-  const sessions = await betService.getBettingSessions(groupId);
+  const sessions = await betRepository.findBettingSessions(groupId);
   res.send(sessions);
-};
-
-export const putInvitationsResponse = async (req, res, next) => {
-  const body = req.body;
-  if (body.status === "accept") {
-    try {
-      await groupService.joinGroup(
-        body.invitationId,
-        body.groupId,
-        body.userId,
-      );
-      res.status(201).send({
-        message: "Member created.",
-      });
-    } catch (error) {
-      next(error);
-    }
-  } else {
-    try {
-      await groupRepository.updateInvitation(body.invitationId, "decline");
-      res.status(200).send({
-        message: "OK",
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
-};
-
-export const postInvitation = (req, res) => {
-  res.send({ message: "NOT IMPLEMENTED YET." });
 };

@@ -74,13 +74,22 @@ export function findBettingSessions(groupId) {
   return prisma.betting_sessions.findMany({
     select: {
       id: true,
-      group_id: true,
       name: true,
+    },
+    where: {
+      group_id: groupId,
+    },
+  });
+}
+
+export function findSessionById(sessionId) {
+  return prisma.betting_sessions.findFirst({
+    select: {
       competition_id: true,
       season_id: true,
     },
     where: {
-      group_id: groupId,
+      id: sessionId,
     },
   });
 }

@@ -1,5 +1,5 @@
-import * as competitionService from "../services/competitionService.js";
-import * as betService from "../services/betService.js";
+import * as sportService from "../services/sportService.js";
+import * as betRepository from "../repositories/betRepository.js";
 
 export const getMatchdays = async (req, res, next) => {
   const sessionId = Number(req.params.id);
@@ -10,7 +10,7 @@ export const getMatchdays = async (req, res, next) => {
     status = [2];
   }
   try {
-    const matchdays = await competitionService.getRoundsBySession({
+    const matchdays = await sportService.getRoundsBySession({
       sessionId,
       status,
     });
@@ -24,7 +24,7 @@ export const getMatches = async (req, res, next) => {
   const sessionId = Number(req.params.id);
   const round = req.query.round;
   try {
-    const matches = await competitionService.getMatchesBySession({
+    const matches = await sportService.getMatchesBySession({
       sessionId,
       round,
     });
@@ -40,7 +40,7 @@ export const getBets = async (req, res, next) => {
   const userId = req.user;
   const includeMatches = false;
   try {
-    const bets = await betService.getBets({
+    const bets = await betRepository.findBets({
       userId,
       sessionId,
       round,
@@ -50,4 +50,10 @@ export const getBets = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+export const getStandings = async (req, res) => {
+  const bettingSessionId = Number(req.params.id);
+  const standings = await betRepository.findStandings(bettingSessionId);
+  res.send(standings);
 };

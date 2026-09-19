@@ -8,7 +8,7 @@ function Notification() {
     data: notifications,
     loading,
     error,
-  } = useFetchData(user ? `/user/${user.id}/invitations` : null);
+  } = useFetchData(user ? `/invitations` : null);
 
   if (!user) {
     return <p>Please sign in to view your notifications.</p>;

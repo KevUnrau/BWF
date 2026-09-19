@@ -2,7 +2,7 @@ import * as authRepository from "../repositories/authRepository.js";
 import { SignJWT, jwtVerify, decodeJwt } from "jose";
 import * as argon2 from "argon2";
 import env from "../config/env.js";
-import { InvalidCredentialsError, NotFoundError } from "../errors/AppError.js";
+import { InvalidCredentialsError } from "../errors/AppError.js";
 import crypto from "node:crypto";
 
 const accessSecret = new TextEncoder().encode(env.jwtAccessSecret);

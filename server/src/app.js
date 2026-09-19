@@ -4,13 +4,10 @@ import env from "./config/env.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import betRoutes from "./routes/betRoutes.js";
-import matchRoutes from "./routes/matchRoutes.js";
-import competitionRoutes from "./routes/competitionRoutes.js";
-import standingsRoutes from "./routes/standingsRoutes.js";
 import groupRoutes from "./routes/groupRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
-import userRoutes from "./routes/userRoutes.js";
 import sessionRoutes from "./routes/sessionRoutes.js";
+import invitationRoutes from "./routes/invitationRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
 import { NotFoundError } from "./errors/AppError.js";
 
@@ -28,13 +25,10 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.use("/bets", betRoutes);
-app.use("/matches", matchRoutes);
-app.use("/competitions", competitionRoutes);
-app.use("/standings", standingsRoutes);
 app.use("/groups", groupRoutes);
 app.use("/auth", authRoutes);
-app.use("/user", userRoutes);
-app.use("/session", sessionRoutes);
+app.use("/invitations", invitationRoutes);
+app.use("/sessions", sessionRoutes);
 
 // Fallback for Unmatched Routes
 app.all("{*path}", (req, res, next) => {
