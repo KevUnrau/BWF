@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useApi } from "../api/client.js";
 import { useAuth } from "../context/AuthContext";
-import { redirect, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function SignIn() {
   const [user, setUser] = useState({ mail: "", password: "" });

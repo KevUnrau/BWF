@@ -6,10 +6,11 @@ import GroupSettings from "./pages/GroupSettings.jsx";
 import GroupStandings from "./pages/GroupStandings.jsx";
 import Homepage from "./pages/Homepage";
 import GroupMatches from "./pages/GroupMatches.jsx";
+import GroupCreate from "./pages/GroupCreate.jsx";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import Notification from "./pages/Notification.jsx";
-import { Children, useEffect } from "react";
+import { useEffect } from "react";
 import { useApi } from "./api/client.js";
 import { useAuth } from "./context/AuthContext.jsx";
 
@@ -40,6 +41,10 @@ function App() {
       <Routes>
         <Route element={<MainLayout></MainLayout>}>
           <Route path="/" element={<Homepage></Homepage>}></Route>
+          <Route
+            path="/group/create"
+            element={<GroupCreate></GroupCreate>}
+          ></Route>
           <Route path="/group" element={<GroupLayout></GroupLayout>}>
             <Route path=":groupId" element={null}></Route>
             <Route
@@ -54,12 +59,12 @@ function App() {
                 path="matches"
                 element={<GroupMatches></GroupMatches>}
               ></Route>
-              <Route
-                path="settings"
-                element={<GroupSettings></GroupSettings>}
-              ></Route>
             </Route>
           </Route>
+          <Route
+            path="/group/:groupId/settings"
+            element={<GroupSettings></GroupSettings>}
+          ></Route>
           <Route path="/auth" element={<Auth signUp={false}></Auth>}></Route>
           <Route path="/profile" element={<Profile></Profile>}></Route>
           <Route

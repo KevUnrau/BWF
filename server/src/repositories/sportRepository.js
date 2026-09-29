@@ -1,7 +1,7 @@
 import prisma from "../prisma/client.js";
 
-export function findCurrentRound(competitionId) {
-  return prisma.matches.findFirst({
+export function findCurrentRound(competitionId, db = prisma) {
+  return db.matches.findFirst({
     where: {
       competition_id: competitionId,
       status_id: 3,
@@ -12,8 +12,8 @@ export function findCurrentRound(competitionId) {
   });
 }
 
-export function findRounds({ competitionId, seasonId, status }) {
-  return prisma.matches.findMany({
+export function findRounds({ competitionId, seasonId, status, db = prisma }) {
+  return db.matches.findMany({
     where: {
       AND: [{ competition_id: competitionId }, { season_id: seasonId }],
       OR: status.map((status) => {
@@ -33,8 +33,8 @@ export function findRounds({ competitionId, seasonId, status }) {
   });
 }
 
-export function findMatches({ competitionId, seasonId, round }) {
-  return prisma.matches.findMany({
+export function findMatches({ competitionId, seasonId, round, db = prisma }) {
+  return db.matches.findMany({
     where: {
       competition_id: competitionId,
       season_id: seasonId,
@@ -54,5 +54,18 @@ export function findMatches({ competitionId, seasonId, round }) {
       },
       kickoff_at: true,
     },
+  });
+}
+
+export function findCompetitions(db = prisma) {
+  return db.competitions.findMany({
+    select: { id: true, name: true },
+  });
+}
+
+export function findSeasonsByCompetition(competitionId, db = prisma) {
+  return db.seasons.findMany({
+    select: { id: true, name: true },
+    where: { competition_id: competitionId },
   });
 }

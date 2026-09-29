@@ -38,6 +38,13 @@ export const putInvitationsResponse = async (req, res, next) => {
   }
 };
 
-export const postInvitation = (req, res) => {
-  res.send({ message: "NOT IMPLEMENTED YET." });
+export const postInvitation = async (req, res, next) => {
+  const { invited, groupId } = req.body;
+  const invitedBy = req.user;
+  try {
+    await groupService.createInvitation(groupId, invited, invitedBy);
+    res.send({ message: "OK" });
+  } catch (error) {
+    next(error);
+  }
 };

@@ -10,9 +10,6 @@ function SessionLayout() {
         <li className="navbar-item">
           <Link to={"matches"}>Matches</Link>
         </li>
-        <li className="navbar-item">
-          <Link to={"settings"}>Settings</Link>
-        </li>
       </ul>
       <Outlet></Outlet>
     </>

@@ -8,6 +8,7 @@ import groupRoutes from "./routes/groupRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import sessionRoutes from "./routes/sessionRoutes.js";
 import invitationRoutes from "./routes/invitationRoutes.js";
+import competitionRoutes from "./routes/competitionRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
 import { NotFoundError } from "./errors/AppError.js";
 
@@ -29,6 +30,7 @@ app.use("/groups", groupRoutes);
 app.use("/auth", authRoutes);
 app.use("/invitations", invitationRoutes);
 app.use("/sessions", sessionRoutes);
+app.use("/competitions", competitionRoutes);
 
 // Fallback for Unmatched Routes
 app.all("{*path}", (req, res, next) => {

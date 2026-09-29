@@ -1,15 +1,13 @@
 import { useState } from "react";
 import { useApi } from "../api/client";
 
-function AddMember({ groupId }) {
+function RemoveMember({ groupId }) {
   const [member, setMember] = useState("");
   const { apiFetch } = useApi();
   async function handleSubmit(username) {
     try {
-      const body = { invited: username, groupId };
-      await apiFetch(`/invitations`, {
-        method: "POST",
-        body: JSON.stringify(body),
+      await apiFetch(`/groups/${groupId}/members?member=${username}`, {
+        method: "DELETE",
       });
     } catch (error) {
       console.error(error);
@@ -17,10 +15,10 @@ function AddMember({ groupId }) {
   }
   return (
     <>
-      <label htmlFor="addMember">Invite member to group: </label>
+      <label htmlFor="removeMember">Remove member from group: </label>
       <input
         type="text"
-        id="addMember"
+        id="removeMember"
         onChange={(event) => {
           setMember(event.target.value);
         }}
@@ -33,10 +31,10 @@ function AddMember({ groupId }) {
           handleSubmit(member);
         }}
       >
-        Invite
+        Remove
       </button>
     </>
   );
 }
 
-export default AddMember;
+export default RemoveMember;

@@ -57,3 +57,24 @@ export const getStandings = async (req, res) => {
   const standings = await betRepository.findStandings(bettingSessionId);
   res.send(standings);
 };
+
+export const postSession = async (req, res, next) => {
+  const body = req.body;
+  try {
+    await betRepository.createBettingSession(body);
+    res.send({ message: "OK" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteSession = async (req, res, next) => {
+  const groupId = Number(req.query.groupId);
+  const name = req.query.session;
+  try {
+    await betRepository.deleteBettingSession(groupId, name);
+    res.send({ message: "OK" });
+  } catch (error) {
+    next(error);
+  }
+};

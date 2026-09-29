@@ -1,6 +1,11 @@
 import { Router } from "express";
 import * as sessionController from "../controllers/sessionController.js";
 import { auth } from "../middleware/auth.js";
+import {
+  validate,
+  sessionValidation,
+  removeSessionValidation,
+} from "../middleware/validate.js";
 
 const router = Router();
 
@@ -13,5 +18,13 @@ router.get("/:id/bets", sessionController.getBets);
 router.get("/:id/matches", sessionController.getMatches);
 
 router.get("/:id/standings", sessionController.getStandings);
+
+router.post("/", validate(sessionValidation), sessionController.postSession);
+
+router.delete(
+  "/",
+  validate(removeSessionValidation),
+  sessionController.deleteSession,
+);
 
 export default router;
