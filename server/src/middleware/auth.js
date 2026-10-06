@@ -1,8 +1,10 @@
 import {
   InvalidCredentialsError,
   TokenExpiredError,
+  ForbiddenError,
 } from "../errors/AppError.js";
 import { verifyToken } from "../services/authService.js";
+import * as authRepository from "../repositories/authRepository.js";
 
 export async function auth(req, res, next) {
   const authHeader = req.headers["authorization"];
@@ -21,6 +23,19 @@ export async function auth(req, res, next) {
     if ((error.code = "ERR_JWT_EXPIRED")) {
       error = new TokenExpiredError();
     }
+    next(error);
+  }
+  return next();
+}
+
+export async function adminAuth(req, res, next) {
+  try {
+    const userId = req.user;
+    const user = await authRepository.findUserById(userId);
+    if (user.user_roles.name !== "admin") {
+      throw new ForbiddenError();
+    }
+  } catch (error) {
     next(error);
   }
   return next();

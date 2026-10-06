@@ -13,6 +13,12 @@ export class InvalidCredentialsError extends AppError {
   }
 }
 
+export class ForbiddenError extends AppError {
+  constructor(message = "Forbidden.") {
+    super(message, 403);
+  }
+}
+
 export class TokenExpiredError extends InvalidCredentialsError {
   constructor(message = "Access token expired.") {
     super(message);
