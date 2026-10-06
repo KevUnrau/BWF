@@ -95,3 +95,19 @@ export function findSeasonsByCompetition(competitionId, db = prisma) {
     where: { competition_id: competitionId },
   });
 }
+
+export function findMatchdayStatus(
+  competitionId,
+  seasonId,
+  matchday,
+  db = prisma,
+) {
+  return db.matches.findFirst({
+    select: { match_status: { select: { name: true } } },
+    where: {
+      competition_id: competitionId,
+      season_id: seasonId,
+      round: matchday,
+    },
+  });
+}

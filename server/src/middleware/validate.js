@@ -3,6 +3,7 @@ import { ValidationError } from "../errors/AppError.js";
 import * as authRepository from "../repositories/authRepository.js";
 import * as groupRepository from "../repositories/groupRepository.js";
 import * as betRepository from "../repositories/betRepository.js";
+import * as sportRepository from "../repositories/sportRepository.js";
 
 export const validate = (validations) => {
   return async (req, res, next) => {
@@ -77,6 +78,36 @@ export const userValidation = [
 export const betValidation = [
   goalValidationChain("bets.*.homeGoals"),
   goalValidationChain("bets.*.awayGoals"),
+];
+
+export const closeMatchdayValidation = [
+  goalValidationChain("matches.*.homeGoals"),
+  goalValidationChain("matches.*.awayGoals"),
+  body("matchday.round").custom(async (value, { req }) => {
+    const { match_status: status } = await sportRepository.findMatchdayStatus(
+      req.body.competition,
+      req.body.season,
+      value,
+    );
+    if (status.name !== "in progress") {
+      throw new Error("You can't close a matchday that is not in progress.");
+    }
+  }),
+];
+
+export const recalculateMatchdayValidation = [
+  goalValidationChain("matches.*.homeGoals"),
+  goalValidationChain("matches.*.awayGoals"),
+  body("matchday.round").custom(async (value, { req }) => {
+    const { match_status: status } = await sportRepository.findMatchdayStatus(
+      req.body.competition,
+      req.body.season,
+      value,
+    );
+    if (status.name !== "closed") {
+      throw new Error("You can't recalculate a matchday that is not closed.");
+    }
+  }),
 ];
 
 export const invitationValidation = [
