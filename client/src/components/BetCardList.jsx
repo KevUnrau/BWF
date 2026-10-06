@@ -9,7 +9,7 @@ function BetCardList({ matchday, bettingSessionId }) {
     error,
   } = useFetchData(
     matchday && bettingSessionId
-      ? `/bets?bettingSessionId=${bettingSessionId}&round=${matchday}&include=matches`
+      ? `/bets?bettingSessionId=${bettingSessionId}&round=${matchday.round}&include=matches`
       : null,
   );
 
@@ -30,7 +30,7 @@ function BetCardList({ matchday, bettingSessionId }) {
   }
 
   if (!bets || bets.length === 0) {
-    return <p>No bets found for matchday {matchday}.</p>;
+    return <p>No bets found for matchday {matchday.round}.</p>;
   }
 
   const totalPoints = bets.reduce((accumulator, currentValue) => {
@@ -49,7 +49,7 @@ function BetCardList({ matchday, bettingSessionId }) {
     <>
       <ul>{betCards}</ul>
       <div className="bet-card">
-        Total Points for matchday {matchday}: {totalPoints}
+        Total Points for matchday {matchday.round}: {totalPoints}
       </div>
     </>
   );

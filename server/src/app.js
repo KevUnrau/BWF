@@ -9,6 +9,7 @@ import authRoutes from "./routes/authRoutes.js";
 import sessionRoutes from "./routes/sessionRoutes.js";
 import invitationRoutes from "./routes/invitationRoutes.js";
 import competitionRoutes from "./routes/competitionRoutes.js";
+import matchdayRoutes from "./routes/matchdayRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
 import { NotFoundError } from "./errors/AppError.js";
 
@@ -31,6 +32,7 @@ app.use("/auth", authRoutes);
 app.use("/invitations", invitationRoutes);
 app.use("/sessions", sessionRoutes);
 app.use("/competitions", competitionRoutes);
+app.use("/matchdays", matchdayRoutes);
 
 // Fallback for Unmatched Routes
 app.all("{*path}", (req, res, next) => {

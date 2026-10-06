@@ -15,7 +15,8 @@ export const getBets = async (req, res) => {
 };
 
 export const putBets = async (req, res) => {
-  const body = req.body;
+  const user = req.user;
+  const body = { ...req.body, user };
   await betRepository.upsertBets(body);
   res.send(body);
 };

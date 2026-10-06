@@ -19,6 +19,11 @@ function Navbar() {
         <li className="navbar-item">
           <Link to={"/group"}>Groups</Link>
         </li>
+        {user.role_id === 1 && (
+          <li className="navbar-item">
+            <Link to={"/admin"}>Admin</Link>
+          </li>
+        )}
         <li id="mail" className="navbar-item ml-auto">
           <Link to={"/notifications"}>📥</Link>
         </li>

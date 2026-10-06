@@ -85,11 +85,10 @@ model bets_standings {
   user_id            Int
   points             Int
   updated_at         DateTime         @default(now()) @db.Timestamptz(6)
-  group_id           Int
   betting_sessions   betting_sessions @relation(fields: [betting_session_id], references: [id], onDelete: Cascade, map: "fk_standings_betting_session_id")
   users              users            @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "fk_standings_user_id")
-  members            members          @relation(fields: [group_id, user_id], references: [group_id, user_id], onDelete: Cascade, map: "standings_members_fk")
 
+  @@unique([betting_session_id, user_id], map: "standings_unique")
   @@map("standings")
   @@schema("bets")
 }
@@ -139,15 +138,14 @@ model member_roles {
 }
 
 model members {
-  id           Int              @id(map: "members_pk") @default(autoincrement())
+  id           Int           @id(map: "members_pk") @default(autoincrement())
   group_id     Int
   user_id      Int
   role_id      Int?
-  joined_at    DateTime         @default(now()) @db.Timestamptz(6)
-  standings    bets_standings[]
-  groups       groups           @relation(fields: [group_id], references: [id], onDelete: Cascade, map: "fk_members_group_id")
-  member_roles member_roles?    @relation(fields: [role_id], references: [id], map: "fk_members_role_id")
-  users        users            @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "fk_members_user_id")
+  joined_at    DateTime      @default(now()) @db.Timestamptz(6)
+  groups       groups        @relation(fields: [group_id], references: [id], onDelete: Cascade, map: "fk_members_group_id")
+  member_roles member_roles? @relation(fields: [role_id], references: [id], map: "fk_members_role_id")
+  users        users         @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "fk_members_user_id")
 
   @@unique([group_id, user_id], map: "members_unique")
   @@schema("groups")

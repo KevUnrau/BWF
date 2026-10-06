@@ -9,6 +9,7 @@ import GroupMatches from "./pages/GroupMatches.jsx";
 import GroupCreate from "./pages/GroupCreate.jsx";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
+import Admin from "./pages/Admin.jsx";
 import Notification from "./pages/Notification.jsx";
 import { useEffect } from "react";
 import { useApi } from "./api/client.js";
@@ -67,6 +68,7 @@ function App() {
           ></Route>
           <Route path="/auth" element={<Auth signUp={false}></Auth>}></Route>
           <Route path="/profile" element={<Profile></Profile>}></Route>
+          <Route path="/admin" element={<Admin></Admin>}></Route>
           <Route
             path="/notifications"
             element={<Notification></Notification>}

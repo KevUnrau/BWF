@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams } from "react-router";
-import MatchdaySelection from "../components/MatchdaySelection";
-import BetForm from "../components/BetForm";
+import BetMatchdaySelection from "../components/BetMatchdaySelection";
+import BetMatchdayForm from "../components/BetMatchdayForm";
 import BetCardList from "../components/BetCardList";
 
 function GroupMatches() {
@@ -22,30 +22,30 @@ function GroupMatches() {
       <section id="bet-form">
         <h2>Bet</h2>
         <div>
-          <MatchdaySelection
+          <BetMatchdaySelection
             session={sessionId}
             status="open"
             selectedMatchday={selectedBetMatchday}
             changeHandler={handleMatchdaySelection}
             initValue="min"
-          ></MatchdaySelection>
+          ></BetMatchdaySelection>
         </div>
-        <BetForm
+        <BetMatchdayForm
+          session={sessionId}
           matchday={selectedBetMatchday}
-          bettingSessionId={sessionId}
-        ></BetForm>
+        ></BetMatchdayForm>
       </section>
       <hr></hr>
       <section id="previous-bet">
         <h2>Prediction results</h2>
         <div>
-          <MatchdaySelection
+          <BetMatchdaySelection
             session={sessionId}
             status="closed"
             selectedMatchday={selectedPreviousMatchday}
             changeHandler={handlePreviousMatchdaySelection}
             initValue="max"
-          ></MatchdaySelection>
+          ></BetMatchdaySelection>
         </div>
         <BetCardList
           matchday={selectedPreviousMatchday}

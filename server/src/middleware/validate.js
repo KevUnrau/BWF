@@ -75,8 +75,8 @@ export const userValidation = [
 ];
 
 export const betValidation = [
-  goalValidationChain("bets.*.home_goals"),
-  goalValidationChain("bets.*.away_goals"),
+  goalValidationChain("bets.*.homeGoals"),
+  goalValidationChain("bets.*.awayGoals"),
 ];
 
 export const invitationValidation = [
@@ -151,7 +151,6 @@ export const sessionValidation = [
       req.body.groupId,
       value,
     );
-    console.log(session);
     if (session) {
       throw new Error(
         "Session name already in use. Please choose a different one.",

@@ -57,26 +57,28 @@ export function upsertBets(body, db = prisma) {
       return prisma.bets.upsert({
         where: {
           match_id_user_id_betting_session_id: {
-            betting_session_id: body.bettingSessionId,
-            user_id: body.userId,
-            match_id: bet.match_id,
+            betting_session_id: body.session,
+            user_id: body.user,
+            match_id: bet.id,
           },
         },
         create: {
-          ...bet,
-          betting_session_id: body.bettingSessionId,
-          user_id: body.userId,
+          match_id: bet.id,
+          home_goals: bet.homeGoals,
+          away_goals: bet.awayGoals,
+          betting_session_id: body.session,
+          user_id: body.user,
         },
         update: {
-          home_goals: bet.home_goals,
-          away_goals: bet.away_goals,
+          home_goals: bet.homeGoals,
+          away_goals: bet.awayGoals,
         },
       });
     }),
   );
 }
 
-export function findBettingSessions(groupId, db = prisma) {
+export function findSessions(groupId, db = prisma) {
   return db.betting_sessions.findMany({
     select: {
       id: true,
@@ -107,7 +109,7 @@ export function findSessionByName(groupId, name, db = prisma) {
   });
 }
 
-export function createBettingSession(body, db = prisma) {
+export function createSession(body, db = prisma) {
   return db.betting_sessions.create({
     data: {
       group_id: body.groupId,
@@ -118,21 +120,67 @@ export function createBettingSession(body, db = prisma) {
   });
 }
 
-export function deleteBettingSession(groupId, name, db = prisma) {
+export function deleteSession(groupId, name, db = prisma) {
   return db.betting_sessions.delete({
     where: { group_id_name: { group_id: groupId, name: name } },
   });
 }
 
-export function createStandings(sessionId, groupId, users, db = prisma) {
+export function createStandings(sessionId, users, db = prisma) {
   return db.bets_standings.createMany({
     data: users.map((user) => {
       return {
         betting_session_id: sessionId,
-        group_id: groupId,
         points: 0,
         user_id: user.id,
       };
     }),
+  });
+}
+
+export function deleteStanding(sessionId, userId, db = prisma) {
+  return db.bets_standings.delete({
+    where: {
+      betting_session_id_user_id: {
+        betting_session_id: sessionId,
+        user_id: userId,
+      },
+    },
+  });
+}
+
+export function deleteBets(sessionId, userId, db = prisma) {
+  return db.bets.deleteMany({
+    where: { betting_session_id: sessionId, user_id: userId },
+  });
+}
+
+export function findBetsByMatch(matchId, db = prisma) {
+  return db.bets.findMany({
+    select: { id: true, home_goals: true, away_goals: true },
+    where: { match_id: matchId },
+  });
+}
+
+export function updateBet(betId, points, db = prisma) {
+  return db.bets.update({ data: { points: points }, where: { id: betId } });
+}
+
+export function calcStandings(db = prisma) {
+  return db.bets.groupBy({
+    by: ["betting_session_id", "user_id"],
+    _sum: { points: true },
+  });
+}
+
+export function updateStanding(sessionId, userId, points, db = prisma) {
+  return db.bets_standings.update({
+    data: { points: points, updated_at: new Date().toISOString() },
+    where: {
+      betting_session_id_user_id: {
+        betting_session_id: sessionId,
+        user_id: userId,
+      },
+    },
   });
 }

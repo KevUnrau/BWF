@@ -11,7 +11,7 @@ export const getGroupsByUser = async (req, res) => {
 
 export const getSessionsByGroup = async (req, res) => {
   const groupId = Number(req.params.groupId);
-  const sessions = await betRepository.findBettingSessions(groupId);
+  const sessions = await betRepository.findSessions(groupId);
   res.send(sessions);
 };
 

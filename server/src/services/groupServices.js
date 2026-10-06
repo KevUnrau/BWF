@@ -7,17 +7,9 @@ export function joinGroup(invitationId, groupId, userId) {
   return prisma.$transaction(async (tx) => {
     groupRepository.updateInvitation(invitationId, "accept", tx);
     await groupRepository.createMember(groupId, userId, tx);
-    const bettingSessions = await betRepository.findBettingSessions(
-      groupId,
-      tx,
-    );
+    const bettingSessions = await betRepository.findSessions(groupId, tx);
     for (const session of bettingSessions) {
-      await betRepository.createStandings(
-        session.id,
-        groupId,
-        [{ id: userId }],
-        tx,
-      );
+      await betRepository.createStandings(session.id, [{ id: userId }], tx);
     }
     return;
   });
@@ -29,6 +21,11 @@ export async function removeMember({ groupId, username, userId }) {
     : await authRepository.findUserByName(username);
 
   return prisma.$transaction(async (tx) => {
+    const bettingSessions = await betRepository.findSessions(groupId, tx);
+    for (const session of bettingSessions) {
+      await betRepository.deleteStanding(session.id, memberId, tx);
+      await betRepository.deleteBets(session.id, memberId, tx);
+    }
     await groupRepository.deleteMember(groupId, memberId, tx);
     const membersLeft = await groupRepository.findMembersByGroup(groupId, tx);
     if (membersLeft.length === 0) {

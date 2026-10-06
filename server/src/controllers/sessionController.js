@@ -61,7 +61,7 @@ export const getStandings = async (req, res) => {
 export const postSession = async (req, res, next) => {
   const body = req.body;
   try {
-    await betRepository.createBettingSession(body);
+    await betRepository.createSession(body);
     res.send({ message: "OK" });
   } catch (error) {
     next(error);
@@ -72,7 +72,7 @@ export const deleteSession = async (req, res, next) => {
   const groupId = Number(req.query.groupId);
   const name = req.query.session;
   try {
-    await betRepository.deleteBettingSession(groupId, name);
+    await betRepository.deleteSession(groupId, name);
     res.send({ message: "OK" });
   } catch (error) {
     next(error);
