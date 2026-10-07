@@ -5,7 +5,7 @@ import prisma from "../prisma/client.js";
 
 export function joinGroup(invitationId, groupId, userId) {
   return prisma.$transaction(async (tx) => {
-    groupRepository.updateInvitation(invitationId, "accept", tx);
+    groupRepository.updateInvitationStatus(invitationId, "accept", tx);
     await groupRepository.createMember(groupId, userId, tx);
     const bettingSessions = await betRepository.findSessions(groupId, tx);
     for (const session of bettingSessions) {
@@ -54,4 +54,10 @@ export async function createInvitation(
     invitedUser.id,
     invitedByUser,
   );
+}
+
+export async function readInvitations(userId) {
+  const invitations = await groupRepository.findInvitationsByUser(userId);
+  await groupRepository.updateInvitationsReadStatus(userId);
+  return invitations;
 }

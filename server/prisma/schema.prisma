@@ -121,6 +121,7 @@ model invitations {
   created_at                                  DateTime           @default(now()) @db.Timestamptz(6)
   responded_at                                DateTime?          @db.Timestamptz(6)
   expires_at                                  DateTime           @default(dbgenerated("(CURRENT_TIMESTAMP + '7 days'::interval)")) @db.Timestamptz(6)
+  read_at                                     DateTime?          @db.Timestamptz(6)
   groups                                      groups             @relation(fields: [group_id], references: [id], onDelete: Cascade, map: "fk_invitations_group_id")
   users_invitations_invited_by_user_idTousers users?             @relation("invitations_invited_by_user_idTousers", fields: [invited_by_user_id], references: [id], map: "fk_invitations_invited_by_user_id")
   users_invitations_invited_user_idTousers    users              @relation("invitations_invited_user_idTousers", fields: [invited_user_id], references: [id], onDelete: Cascade, map: "fk_invitations_invited_user_id")

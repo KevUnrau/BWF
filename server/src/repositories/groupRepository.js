@@ -41,12 +41,20 @@ export function findInvitationsByUser(userId, status, expiresAt, db = prisma) {
       created_at: true,
       expires_at: true,
       responded_at: true,
+      read_at: true,
     },
     where: {
       invited_user_id: userId,
       ...(status && { status_id: status }),
       ...(expiresAt && { expires_at: { gt: expiresAt } }),
     },
+  });
+}
+
+export function countUnreadInvitationsByUser(userId, db = prisma) {
+  return db.invitations.aggregate({
+    _count: true,
+    where: { invited_user_id: userId, read_at: null },
   });
 }
 
@@ -66,7 +74,7 @@ export function createInvitation(
   });
 }
 
-export function updateInvitation(id, status, db = prisma) {
+export function updateInvitationStatus(id, status, db = prisma) {
   if (status === "accept") {
     return db.invitations.update({
       data: { status_id: 2, responded_at: new Date().toISOString() },
@@ -78,6 +86,13 @@ export function updateInvitation(id, status, db = prisma) {
       where: { id: id },
     });
   }
+}
+
+export function updateInvitationsReadStatus(userId, db = prisma) {
+  return db.invitations.updateMany({
+    data: { read_at: new Date().toISOString() },
+    where: { invited_user_id: userId, read_at: null },
+  });
 }
 
 export function createMember(groupId, userId, db = prisma) {

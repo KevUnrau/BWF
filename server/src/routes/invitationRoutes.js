@@ -9,6 +9,8 @@ router.use(auth);
 
 router.get("/", invitationController.getInvitiationsByUser);
 
+router.get("/unread/count", invitationController.getUnreadInvitationsCount);
+
 router.post(
   "/",
   validate(invitationValidation),

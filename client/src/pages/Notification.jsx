@@ -49,6 +49,7 @@ function Notification() {
               notification.users_invitations_invited_by_user_idTousers.username
             }
             respondedAt={notification.responded_at}
+            readAt={notification.read_at}
           ></Invitation>
         </li>
       );

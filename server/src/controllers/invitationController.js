@@ -4,8 +4,19 @@ import * as groupService from "../services/groupServices.js";
 export const getInvitiationsByUser = async (req, res, next) => {
   const userId = Number(req.user);
   try {
-    const invitations = await groupRepository.findInvitationsByUser(userId);
+    const invitations = await groupService.readInvitations(userId);
     res.send(invitations);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getUnreadInvitationsCount = async (req, res, next) => {
+  const user = Number(req.user);
+  try {
+    const unreadInvitations =
+      await groupRepository.countUnreadInvitationsByUser(user);
+    res.status(200).send(unreadInvitations);
   } catch (error) {
     next(error);
   }
@@ -28,7 +39,10 @@ export const putInvitationsResponse = async (req, res, next) => {
     }
   } else {
     try {
-      await groupRepository.updateInvitation(body.invitationId, "decline");
+      await groupRepository.updateInvitationStatus(
+        body.invitationId,
+        "decline",
+      );
       res.status(200).send({
         message: "OK",
       });

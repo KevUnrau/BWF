@@ -10,6 +10,7 @@ function Invitation({
   invitationCreated,
   invitationExpires,
   respondedAt,
+  readAt,
 }) {
   const { apiFetch } = useApi();
   const [status, setStatus] = useState(responseStatus);
@@ -62,7 +63,13 @@ function Invitation({
   }
 
   return (
-    <div className="flex border rounded-sm p-1 m-1">
+    <div
+      className={
+        readAt
+          ? "flex border rounded-sm p-1 m-1"
+          : "flex border-2 rounded-sm p-1 m-1"
+      }
+    >
       <p>
         {invitedBy} asked you to join Group {groupName} on{" "}
         {createdDate.toDateString()}. Invitation expires on{" "}
