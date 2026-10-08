@@ -1,5 +1,6 @@
 import * as sportService from "../services/sportService.js";
 import * as betRepository from "../repositories/betRepository.js";
+import * as betService from "../services/betService.js";
 
 export const getMatchdays = async (req, res, next) => {
   const sessionId = Number(req.params.id);
@@ -61,7 +62,7 @@ export const getStandings = async (req, res) => {
 export const postSession = async (req, res, next) => {
   const body = req.body;
   try {
-    await betRepository.createSession(body);
+    await betService.createSession(body);
     res.send({ message: "OK" });
   } catch (error) {
     next(error);

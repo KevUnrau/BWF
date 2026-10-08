@@ -1,6 +1,7 @@
 import prisma from "../prisma/client.js";
 import * as sportRepository from "../repositories/sportRepository.js";
 import * as betRepository from "../repositories/betRepository.js";
+import * as groupRepository from "../repositories/groupRepository.js";
 
 function calcBetPoints(
   matchHomeGoals,
@@ -66,5 +67,16 @@ export function closeMatchday(body, recalculate) {
         db: tx,
       });
     }
+  });
+}
+
+export function createSession(body) {
+  return prisma.$transaction(async (tx) => {
+    const session = await betRepository.createSession(body, tx);
+    const members = await groupRepository.findMembersByGroup(body.groupId, tx);
+    const users = members.map((member) => {
+      return { id: member.user_id };
+    });
+    await betRepository.createStandings(session.id, users, tx);
   });
 }

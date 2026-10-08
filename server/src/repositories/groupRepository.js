@@ -117,7 +117,7 @@ export function createGroup(name, db = prisma) {
 
 export function findMembersByGroup(groupId, db = prisma) {
   return db.members.findMany({
-    select: { id: true },
+    select: { id: true, user_id: true },
     where: { group_id: groupId },
   });
 }
