@@ -57,3 +57,17 @@ export const postGroup = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getUserRole = async (req, res, next) => {
+  const user = req.user;
+  const group = Number(req.params.groupId);
+  try {
+    const { member_roles: role } = await groupRepository.findMember(
+      user,
+      group,
+    );
+    res.status(200).send({ name: role.name });
+  } catch (error) {
+    next(error);
+  }
+};

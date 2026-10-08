@@ -18,6 +18,8 @@ router.post("/", validate(groupValidation), groupController.postGroup);
 router.get("/:groupId/sessions", groupController.getSessionsByGroup);
 router.delete("/:groupId/leave", groupController.leaveGroup);
 
+router.get("/:groupId/userrole", groupController.getUserRole);
+
 router.use(groupAdminAuth);
 
 router.delete(
