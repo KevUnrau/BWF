@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { auth } from "../middleware/auth.js";
+import { auth, groupAdminAuth } from "../middleware/auth.js";
 import * as invitationController from "../controllers/invitationController.js";
 import { validate, invitationValidation } from "../middleware/validate.js";
 
@@ -11,12 +11,14 @@ router.get("/", invitationController.getInvitiationsByUser);
 
 router.get("/unread/count", invitationController.getUnreadInvitationsCount);
 
+router.put("/response", invitationController.putInvitationsResponse);
+
+router.use(groupAdminAuth);
+
 router.post(
   "/",
   validate(invitationValidation),
   invitationController.postInvitation,
 );
-
-router.put("/response", invitationController.putInvitationsResponse);
 
 export default router;

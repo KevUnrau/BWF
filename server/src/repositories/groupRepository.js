@@ -121,3 +121,10 @@ export function findMembersByGroup(groupId, db = prisma) {
     where: { group_id: groupId },
   });
 }
+
+export async function findMember(userId, groupId, db = prisma) {
+  return db.members.findFirst({
+    select: { member_roles: { select: { name: true } } },
+    where: { group_id: groupId, user_id: userId },
+  });
+}
