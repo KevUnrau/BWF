@@ -5,9 +5,9 @@ import {
   groupValidation,
   removeUserValidation,
 } from "../middleware/validate.js";
-import { auth, groupAdminAuth } from "../middleware/auth.js";
+import { auth, groupAdminAuth, groupMemberAuth } from "../middleware/auth.js";
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 router.use(auth);
 
@@ -15,19 +15,22 @@ router.get("/", groupController.getGroupsByUser);
 
 router.post("/", validate(groupValidation), groupController.postGroup);
 
-router.get("/:groupId/sessions", groupController.getSessionsByGroup);
-router.delete("/:groupId/leave", groupController.leaveGroup);
+router.get(
+  "/:groupId/sessions",
+  groupMemberAuth,
+  groupController.getSessionsByGroup,
+);
+router.delete("/:groupId/leave", groupMemberAuth, groupController.leaveGroup);
 
-router.get("/:groupId/userrole", groupController.getUserRole);
-
-router.use(groupAdminAuth);
+router.get("/:groupId/userrole", groupMemberAuth, groupController.getUserRole);
 
 router.delete(
   "/:groupId/members",
+  groupAdminAuth,
   validate(removeUserValidation),
   groupController.deleteMember,
 );
 
-router.delete("/:groupId", groupController.deleteGroup);
+router.delete("/:groupId", groupAdminAuth, groupController.deleteGroup);
 
 export default router;

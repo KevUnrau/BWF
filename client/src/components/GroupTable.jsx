@@ -1,12 +1,16 @@
 import GroupTableRow from "./GroupTableRow";
 import { useFetchData } from "../hooks/useFetchData";
 
-function GroupTable({ sessionId }) {
+function GroupTable({ sessionId, groupId }) {
   const {
     data: standings,
     loading,
     error,
-  } = useFetchData(sessionId ? `/sessions/${sessionId}/standings` : null);
+  } = useFetchData(
+    sessionId && groupId
+      ? `/sessions/${sessionId}/standings?groupId=${groupId}`
+      : null,
+  );
 
   if (!sessionId) {
     return <p>Please select a betting session to view standings.</p>;

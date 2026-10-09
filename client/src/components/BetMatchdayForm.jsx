@@ -2,7 +2,7 @@ import MatchdayForm, { transformMatchObject } from "./MatchdayForm";
 import { useEffect, useState } from "react";
 import { useApi } from "../api/client";
 
-function BetMatchdayForm({ matchday, session }) {
+function BetMatchdayForm({ matchday, session, group }) {
   const [matches, setMatches] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -13,8 +13,12 @@ function BetMatchdayForm({ matchday, session }) {
       try {
         setLoading(true);
         const [matches, bets] = await Promise.all([
-          apiFetch(`/sessions/${session}/matches?round=${matchday.round}`),
-          apiFetch(`/sessions/${session}/bets?&round=${matchday.round}`),
+          apiFetch(
+            `/sessions/${session}/matches?round=${matchday.round}&groupId=${group}`,
+          ),
+          apiFetch(
+            `/sessions/${session}/bets?&round=${matchday.round}&groupId=${group}`,
+          ),
         ]);
         if (bets.length > 0) {
           setMatches(
@@ -46,12 +50,12 @@ function BetMatchdayForm({ matchday, session }) {
       return;
     }
     fetchMatches();
-  }, [matchday, session]);
+  }, [matchday, session, group]);
 
   async function handleSubmit(event, matchResults) {
     event.preventDefault();
     const bets = transformMatchObject(matchResults);
-    const body = { session: Number(session), bets };
+    const body = { groupId: Number(group), session: Number(session), bets };
     try {
       await apiFetch("/bets", {
         method: "PUT",

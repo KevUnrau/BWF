@@ -5,7 +5,7 @@ import BetMatchdayForm from "../components/BetMatchdayForm";
 import BetCardList from "../components/BetCardList";
 
 function GroupMatches() {
-  const { sessionId } = useParams();
+  const { groupId, sessionId } = useParams();
 
   const [selectedPreviousMatchday, setSelectedPreviousMatchday] = useState("");
   const [selectedBetMatchday, setSelectedBetMatchday] = useState("");
@@ -28,11 +28,13 @@ function GroupMatches() {
             selectedMatchday={selectedBetMatchday}
             changeHandler={handleMatchdaySelection}
             initValue="min"
+            group={groupId}
           ></BetMatchdaySelection>
         </div>
         <BetMatchdayForm
           session={sessionId}
           matchday={selectedBetMatchday}
+          group={groupId}
         ></BetMatchdayForm>
       </section>
       <hr></hr>
@@ -45,9 +47,11 @@ function GroupMatches() {
             selectedMatchday={selectedPreviousMatchday}
             changeHandler={handlePreviousMatchdaySelection}
             initValue="max"
+            group={groupId}
           ></BetMatchdaySelection>
         </div>
         <BetCardList
+          groupId={groupId}
           matchday={selectedPreviousMatchday}
           bettingSessionId={sessionId}
         ></BetCardList>

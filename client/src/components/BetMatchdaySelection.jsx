@@ -4,6 +4,7 @@ import MatchdaySelection from "./MatchdaySelection";
 
 function BetMatchdaySelection({
   session,
+  group,
   status,
   changeHandler,
   selectedMatchday,
@@ -14,7 +15,9 @@ function BetMatchdaySelection({
     error,
     loading,
   } = useFetchData(
-    session ? `/sessions/${session}/matchdays?status=${status}` : null,
+    session && group
+      ? `/sessions/${session}/matchdays?status=${status}&groupId=${group}`
+      : null,
   );
 
   useEffect(() => {

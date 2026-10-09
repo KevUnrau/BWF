@@ -49,6 +49,10 @@ function GroupSettings() {
     return <p className="error">Failed to fetch group member role.</p>;
   }
 
+  if (!role) {
+    return <p>User role not found.</p>;
+  }
+
   if (role.name === "admin") {
     return (
       <>

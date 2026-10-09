@@ -95,9 +95,9 @@ export function updateInvitationsReadStatus(userId, db = prisma) {
   });
 }
 
-export function createMember(groupId, userId, db = prisma) {
+export function createMember(groupId, userId, roleId, db = prisma) {
   return db.members.create({
-    data: { group_id: groupId, user_id: userId },
+    data: { group_id: groupId, user_id: userId, role_id: roleId },
   });
 }
 

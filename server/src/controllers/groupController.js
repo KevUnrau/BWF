@@ -66,7 +66,7 @@ export const getUserRole = async (req, res, next) => {
       user,
       group,
     );
-    res.status(200).send({ name: role.name });
+    res.status(200).send(role);
   } catch (error) {
     next(error);
   }

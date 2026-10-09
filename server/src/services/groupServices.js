@@ -6,7 +6,7 @@ import prisma from "../prisma/client.js";
 export function joinGroup(invitationId, groupId, userId) {
   return prisma.$transaction(async (tx) => {
     groupRepository.updateInvitationStatus(invitationId, "accept", tx);
-    await groupRepository.createMember(groupId, userId, tx);
+    await groupRepository.createMember(groupId, userId, 2, tx);
     const bettingSessions = await betRepository.findSessions(groupId, tx);
     for (const session of bettingSessions) {
       await betRepository.createStandings(session.id, [{ id: userId }], tx);
@@ -38,7 +38,7 @@ export async function removeMember({ groupId, username, userId }) {
 export function createGroup(name, userId) {
   return prisma.$transaction(async (tx) => {
     const group = await groupRepository.createGroup(name, tx);
-    const member = await groupRepository.createMember(group.id, userId, tx);
+    const member = await groupRepository.createMember(group.id, userId, 1, tx);
     return { group, member };
   });
 }
