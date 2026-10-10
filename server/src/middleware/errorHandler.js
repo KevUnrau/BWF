@@ -5,11 +5,11 @@ function errorHandler(err, req, res, next) {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     switch (error.code) {
       case "P2002": {
-        error = new ConflictError(error.meta?.target?.[0] || "field");
+        error = new ConflictError();
         break;
       }
       case "P2025": {
-        error = new NotFoundError("field");
+        error = new NotFoundError();
         break;
       }
       default: {

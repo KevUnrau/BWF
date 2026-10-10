@@ -55,7 +55,12 @@ function BetMatchdayForm({ matchday, session, group }) {
   async function handleSubmit(event, matchResults) {
     event.preventDefault();
     const bets = transformMatchObject(matchResults);
-    const body = { groupId: Number(group), session: Number(session), bets };
+    const body = {
+      groupId: Number(group),
+      session: Number(session),
+      round: matchday.round,
+      bets,
+    };
     try {
       await apiFetch("/bets", {
         method: "PUT",

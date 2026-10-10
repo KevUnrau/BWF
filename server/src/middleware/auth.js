@@ -8,7 +8,6 @@ import * as authRepository from "../repositories/authRepository.js";
 import * as groupRepository from "../repositories/groupRepository.js";
 
 function extractGroup(req) {
-  console.log(req);
   return req.params.groupId ?? req.query.groupId ?? req.body.groupId;
 }
 

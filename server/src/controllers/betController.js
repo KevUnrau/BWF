@@ -1,4 +1,5 @@
 import * as betRepository from "../repositories/betRepository.js";
+import * as betService from "../services/betService.js";
 
 export const getBets = async (req, res) => {
   const userId = req.user;
@@ -17,6 +18,6 @@ export const getBets = async (req, res) => {
 export const putBets = async (req, res) => {
   const user = req.user;
   const body = { ...req.body, user };
-  await betRepository.upsertBets(body);
+  await betService.putBets(body);
   res.send(body);
 };

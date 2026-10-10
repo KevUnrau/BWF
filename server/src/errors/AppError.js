@@ -26,14 +26,14 @@ export class TokenExpiredError extends InvalidCredentialsError {
 }
 
 export class NotFoundError extends AppError {
-  constructor(resource) {
-    super(`${resource} not found.`, 404);
+  constructor(message = "Not found.") {
+    super(message, 404);
   }
 }
 
 export class ConflictError extends AppError {
-  constructor(resource) {
-    super(`${resource} already exists.`, 409);
+  constructor(message = "Conflict") {
+    super(message, 409);
   }
 }
 

@@ -2,6 +2,7 @@ import prisma from "../prisma/client.js";
 import * as sportRepository from "../repositories/sportRepository.js";
 import * as betRepository from "../repositories/betRepository.js";
 import * as groupRepository from "../repositories/groupRepository.js";
+import { ConflictError } from "../errors/AppError.js";
 
 function calcBetPoints(
   matchHomeGoals,
@@ -79,4 +80,40 @@ export function createSession(body) {
     });
     await betRepository.createStandings(session.id, users, tx);
   });
+}
+
+export async function putBets(body) {
+  const session = body.session;
+  const { competition_id: competitionId, season_id: seasonId } =
+    await betRepository.findSessionById(session);
+
+  const { match_status: matchdayStatus } =
+    await sportRepository.findMatchdayStatus(
+      competitionId,
+      seasonId,
+      body.round,
+    );
+
+  if (matchdayStatus.name === "closed") {
+    throw new ConflictError("Matchday is already closed.");
+  }
+
+  const matches = await sportRepository.findMatches({
+    competitionId,
+    seasonId,
+    round: body.round,
+  });
+
+  const { kickoff_at: minKickOff } = matches.reduce((accumulator, current) => {
+    if (accumulator.kickoff_at < current.kickoff_at) {
+      return accumulator;
+    }
+    return current;
+  });
+
+  if (minKickOff < new Date()) {
+    throw new ConflictError("Matchday has already started.");
+  }
+
+  return betRepository.upsertBets(body);
 }
