@@ -36,6 +36,23 @@ export async function removeMember({ groupId, username, userId }) {
     const membersLeft = await groupRepository.findMembersByGroup(groupId, tx);
     if (membersLeft.length === 0) {
       await groupRepository.deleteGroup(groupId, tx);
+      return;
+    }
+    const adminsLeft = await groupRepository.countAdmins(groupId, tx);
+    if (adminsLeft === 0) {
+      const members = await groupRepository.findMembersByGroup(groupId, tx);
+      const oldestMember = members.reduce((accumulator, current) => {
+        if (accumulator.joined_at <= current.joined_at) {
+          return accumulator;
+        }
+        return current;
+      });
+      await groupRepository.updateMemberRole(
+        groupId,
+        oldestMember.user_id,
+        1,
+        tx,
+      );
     }
     return;
   });

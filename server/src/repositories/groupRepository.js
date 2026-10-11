@@ -117,7 +117,7 @@ export function createGroup(name, db = prisma) {
 
 export function findMembersByGroup(groupId, db = prisma) {
   return db.members.findMany({
-    select: { id: true, user_id: true },
+    select: { id: true, user_id: true, joined_at: true },
     where: { group_id: groupId },
   });
 }
@@ -131,4 +131,17 @@ export async function findMember(userId, groupId, db = prisma) {
 
 export function countMembers(groupId, db = prisma) {
   return db.members.count({ where: { group_id: groupId } });
+}
+
+export function countAdmins(groupId, db = prisma) {
+  return db.members.count({
+    where: { group_id: groupId, member_roles: { name: "admin" } },
+  });
+}
+
+export function updateMemberRole(groupId, userId, roleId, db = prisma) {
+  return db.members.update({
+    data: { role_id: roleId },
+    where: { group_id_user_id: { group_id: groupId, user_id: userId } },
+  });
 }
