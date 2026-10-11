@@ -145,3 +145,10 @@ export function updateMemberRole(groupId, userId, roleId, db = prisma) {
     where: { group_id_user_id: { group_id: groupId, user_id: userId } },
   });
 }
+
+export function findInvitation(id, db = prisma) {
+  return db.invitations.findFirst({
+    select: { invitation_status: true, expires_at: true },
+    where: { id },
+  });
+}

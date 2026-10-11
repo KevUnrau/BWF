@@ -11,6 +11,18 @@ export async function joinGroup(invitationId, groupId, userId) {
       "Group is full. A member must leave before you can join the group.",
     );
   }
+
+  const invitation = await groupRepository.findInvitation(invitationId);
+  if (invitation.expires_at < new Date()) {
+    throw new ConflictError("Invitation already expired.");
+  }
+
+  if (invitation.invitation_status.name !== "open") {
+    throw new ConflictError(
+      `Invitation has already been ${invitation.invitation_status.name}.`,
+    );
+  }
+
   return prisma.$transaction(async (tx) => {
     await groupRepository.updateInvitationStatus(invitationId, "accept", tx);
     await groupRepository.createMember(groupId, userId, 2, tx);
