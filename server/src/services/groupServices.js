@@ -1,11 +1,18 @@
 import * as groupRepository from "../repositories/groupRepository.js";
 import * as authRepository from "../repositories/authRepository.js";
 import * as betRepository from "../repositories/betRepository.js";
+import { ConflictError } from "../errors/AppError.js";
 import prisma from "../prisma/client.js";
 
-export function joinGroup(invitationId, groupId, userId) {
+export async function joinGroup(invitationId, groupId, userId) {
+  const memberCount = await groupRepository.countMembers(groupId);
+  if (memberCount >= 25) {
+    throw new ConflictError(
+      "Group is full. A member must leave before you can join the group.",
+    );
+  }
   return prisma.$transaction(async (tx) => {
-    groupRepository.updateInvitationStatus(invitationId, "accept", tx);
+    await groupRepository.updateInvitationStatus(invitationId, "accept", tx);
     await groupRepository.createMember(groupId, userId, 2, tx);
     const bettingSessions = await betRepository.findSessions(groupId, tx);
     for (const session of bettingSessions) {
@@ -19,7 +26,6 @@ export async function removeMember({ groupId, username, userId }) {
   const { id: memberId } = userId
     ? { id: userId }
     : await authRepository.findUserByName(username);
-
   return prisma.$transaction(async (tx) => {
     const bettingSessions = await betRepository.findSessions(groupId, tx);
     for (const session of bettingSessions) {
@@ -48,6 +54,12 @@ export async function createInvitation(
   invitedUsername,
   invitedByUser,
 ) {
+  const memberCount = await groupRepository.countMembers(groupId);
+  if (memberCount >= 25) {
+    throw new ConflictError(
+      "Group is full. Please remove a member before inviting a new user.",
+    );
+  }
   const invitedUser = await authRepository.findUserByName(invitedUsername);
   return groupRepository.createInvitation(
     groupId,

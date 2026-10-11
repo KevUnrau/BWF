@@ -19,9 +19,10 @@ export const deleteMember = async (req, res, next) => {
   const groupId = Number(req.params.groupId);
   const memberName = req.query.member;
   try {
-    await groupService.removeMember(groupId, memberName);
+    await groupService.removeMember({ groupId: groupId, username: memberName });
     res.send({ message: "OK" });
   } catch (error) {
+    console.log(error);
     next(error);
   }
 };

@@ -128,3 +128,7 @@ export async function findMember(userId, groupId, db = prisma) {
     where: { group_id: groupId, user_id: userId },
   });
 }
+
+export function countMembers(groupId, db = prisma) {
+  return db.members.count({ where: { group_id: groupId } });
+}
