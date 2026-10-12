@@ -26,11 +26,7 @@ export const putInvitationsResponse = async (req, res, next) => {
   const body = req.body;
   if (body.status === "accept") {
     try {
-      await groupService.joinGroup(
-        body.invitationId,
-        body.groupId,
-        body.userId,
-      );
+      await groupService.joinGroup(body.invitationId, body.groupId, req.user);
       res.status(201).send({
         message: "Member created.",
       });
@@ -57,6 +53,17 @@ export const postInvitation = async (req, res, next) => {
   const invitedBy = req.user;
   try {
     await groupService.createInvitation(groupId, invited, invitedBy);
+    res.send({ message: "OK" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteInvitation = async (req, res, next) => {
+  const user = req.user;
+  const invitationId = Number(req.query.id);
+  try {
+    await groupService.deleteInvitation(user, invitationId);
     res.send({ message: "OK" });
   } catch (error) {
     next(error);

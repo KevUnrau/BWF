@@ -1,7 +1,7 @@
 import * as groupRepository from "../repositories/groupRepository.js";
 import * as authRepository from "../repositories/authRepository.js";
 import * as betRepository from "../repositories/betRepository.js";
-import { ConflictError } from "../errors/AppError.js";
+import { ConflictError, ForbiddenError } from "../errors/AppError.js";
 import prisma from "../prisma/client.js";
 
 export async function joinGroup(invitationId, groupId, userId) {
@@ -101,4 +101,12 @@ export async function readInvitations(userId) {
   const invitations = await groupRepository.findInvitationsByUser(userId);
   await groupRepository.updateInvitationsReadStatus(userId);
   return invitations;
+}
+
+export async function deleteInvitation(userId, invitationId) {
+  const invitation = await groupRepository.findInvitation(invitationId);
+  if (invitation.invited_user_id !== userId) {
+    throw new ForbiddenError("You can only delete your own invitations.");
+  }
+  return groupRepository.deleteInvitation(invitationId);
 }

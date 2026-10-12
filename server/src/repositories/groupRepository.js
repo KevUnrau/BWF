@@ -148,7 +148,15 @@ export function updateMemberRole(groupId, userId, roleId, db = prisma) {
 
 export function findInvitation(id, db = prisma) {
   return db.invitations.findFirst({
-    select: { invitation_status: true, expires_at: true },
+    select: {
+      invited_user_id: true,
+      invitation_status: true,
+      expires_at: true,
+    },
     where: { id },
   });
+}
+
+export function deleteInvitation(id, db = prisma) {
+  return db.invitations.delete({ where: { id } });
 }

@@ -1,8 +1,8 @@
 import { useApi } from "../api/client";
 import { useState } from "react";
+import InvitationDeleteButton from "./InvitationDeleteButton";
 function Invitation({
   id,
-  userId,
   invitedBy,
   groupId,
   groupName,
@@ -11,6 +11,7 @@ function Invitation({
   invitationExpires,
   respondedAt,
   readAt,
+  deleteHandler,
 }) {
   const { apiFetch } = useApi();
   const [status, setStatus] = useState(responseStatus);
@@ -21,7 +22,6 @@ function Invitation({
       invitationId: id,
       groupId: groupId,
       status: response,
-      userId: userId,
     };
     try {
       await apiFetch("/invitations/response", {
@@ -46,6 +46,10 @@ function Invitation({
           {createdDate.toDateString()}. You {status} on{" "}
           {responseDate.toDateString()}.
         </p>
+        <InvitationDeleteButton
+          id={id}
+          deleteHandler={deleteHandler}
+        ></InvitationDeleteButton>
       </div>
     );
   }
@@ -64,6 +68,10 @@ function Invitation({
           {createdDate.toDateString()}. Invitation expired on{" "}
           {expiresDate.toDateString()}.
         </p>
+        <InvitationDeleteButton
+          id={id}
+          deleteHandler={deleteHandler}
+        ></InvitationDeleteButton>
       </div>
     );
   }

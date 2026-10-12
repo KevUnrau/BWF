@@ -9,6 +9,8 @@ router.use(auth);
 
 router.get("/", invitationController.getInvitiationsByUser);
 
+router.delete("/", invitationController.deleteInvitation);
+
 router.get("/unread/count", invitationController.getUnreadInvitationsCount);
 
 router.put("/response", invitationController.putInvitationsResponse);

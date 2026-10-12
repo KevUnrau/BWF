@@ -37,5 +37,5 @@ export const useFetchData = (endpoint, options = {}) => {
     };
   }, [endpoint, apiFetch]);
 
-  return { loading, error, data };
+  return { loading, error, data, setData };
 };

@@ -1,14 +1,31 @@
 import { useAuth } from "../context/AuthContext";
 import { useFetchData } from "../hooks/useFetchData.js";
+import { useApi } from "../api/client.js";
 import Invitation from "../components/Invitation.jsx";
 
 function Notification() {
   const { user } = useAuth();
   const {
     data: notifications,
+    setData: setNotifications,
     loading,
     error,
   } = useFetchData(user ? `/invitations` : null);
+  const { apiFetch } = useApi();
+
+  async function handleDelete(id) {
+    try {
+      await apiFetch(`/invitations?id=${id}`, { method: "DELETE" });
+      const notifications = setNotifications((prev) => {
+        prev.filter((notification) => {
+          return notification.id !== id;
+        });
+      });
+      setNotifications(notifications);
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
 
   if (!user) {
     return <p>Please sign in to view your notifications.</p>;
@@ -39,7 +56,6 @@ function Notification() {
         <li key={`invitation-${notification.id}`}>
           <Invitation
             id={notification.id}
-            userId={user.id}
             invitationCreated={notification.created_at}
             groupId={notification.group_id}
             groupName={notification.groups.name}
@@ -50,6 +66,7 @@ function Notification() {
             }
             respondedAt={notification.responded_at}
             readAt={notification.read_at}
+            deleteHandler={handleDelete}
           ></Invitation>
         </li>
       );
