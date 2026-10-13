@@ -27,7 +27,13 @@ export function transformMatchObject(results) {
   });
 }
 
-function MatchdayForm({ matches, error, loading, submitHandler }) {
+function MatchdayForm({
+  matches,
+  error,
+  loading,
+  submitHandler,
+  isSubmitting,
+}) {
   const [matchResults, setMatchResults] = useState("");
 
   useEffect(() => {
@@ -103,7 +109,9 @@ function MatchdayForm({ matches, error, loading, submitHandler }) {
       }}
     >
       {matchInputs}
-      <button type="submit">Submit</button>
+      <button disabled={isSubmitting} type="submit">
+        {isSubmitting ? "Submitting..." : "Submit"}
+      </button>
     </form>
   );
 }

@@ -2,13 +2,16 @@ import { useState } from "react";
 import CompetitionSelection from "./CompetitionSelection";
 import SeasonSelection from "./SeasonSelection";
 import { useApi } from "../api/client";
+import { useToast } from "../context/ToastContext";
 
 function AddSession({ groupId }) {
   const [name, setName] = useState("");
   const [competition, setCompetition] = useState("");
   const [season, setSeason] = useState("");
   const [notion, setNotion] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { apiFetch } = useApi();
+  const { toast } = useToast();
 
   function handleCompetitionSelection(competition) {
     setSeason("");
@@ -21,6 +24,7 @@ function AddSession({ groupId }) {
 
   async function handleSubmit(event) {
     event.preventDefault();
+    setIsSubmitting(true);
     setNotion("");
     if (!name) {
       setNotion("Please choose a session name.");
@@ -34,13 +38,26 @@ function AddSession({ groupId }) {
       setNotion("Please select a season.");
       return;
     }
-    const body = {
-      groupId,
-      competition: Number(competition),
-      season: Number(season),
-      name,
-    };
-    await apiFetch("/sessions", { method: "POST", body: JSON.stringify(body) });
+    try {
+      const body = {
+        groupId,
+        competition: Number(competition),
+        season: Number(season),
+        name,
+      };
+      await apiFetch("/sessions", {
+        method: "POST",
+        body: JSON.stringify(body),
+      });
+      toast.success("Session created.");
+      setName("");
+      setSeason("");
+      setCompetition("");
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -67,7 +84,9 @@ function AddSession({ groupId }) {
           selectedCompetition={competition}
           selectedSeason={season}
         ></SeasonSelection>
-        <button type="submit">Create</button>
+        <button disabled={isSubmitting} type="submit">
+          {isSubmitting ? "Creating..." : "Create"}
+        </button>
       </form>
       {notion ? <p className="error">{notion}</p> : null}
     </>

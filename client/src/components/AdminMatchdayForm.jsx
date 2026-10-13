@@ -1,5 +1,7 @@
 import { useFetchData } from "../hooks/useFetchData";
 import { useApi } from "../api/client";
+import { useToast } from "../context/ToastContext";
+import { useState } from "react";
 import MatchdayForm, { transformMatchObject } from "./MatchdayForm";
 
 function AdminMatchdayForm({ competition, season, matchday }) {
@@ -14,9 +16,13 @@ function AdminMatchdayForm({ competition, season, matchday }) {
   );
 
   const { apiFetch } = useApi();
+  const { toast } = useToast();
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function handleSubmit(event, matchResults) {
     event.preventDefault();
+    setIsSubmitting(true);
     const matches = transformMatchObject(matchResults);
     const body = {
       competition: Number(competition),
@@ -31,14 +37,18 @@ function AdminMatchdayForm({ competition, season, matchday }) {
           method: "POST",
           body: JSON.stringify(body),
         });
+        toast.success("Matchday closed.");
       } else {
         await apiFetch("/matchdays/recalculate", {
           method: "POST",
           body: JSON.stringify(body),
         });
+        toast.success("Matchday recalculated.");
       }
     } catch (error) {
-      console.log(error);
+      toast.error(error.message);
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -56,6 +66,7 @@ function AdminMatchdayForm({ competition, season, matchday }) {
       loading={loading}
       error={error}
       submitHandler={handleSubmit}
+      isSubmitting={isSubmitting}
     ></MatchdayForm>
   );
 }

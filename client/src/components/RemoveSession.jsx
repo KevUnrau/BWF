@@ -1,16 +1,20 @@
 import { useState } from "react";
 import { useApi } from "../api/client";
+import { useToast } from "../context/ToastContext";
 
 function RemoveSession({ groupId }) {
   const [session, setSession] = useState("");
   const { apiFetch } = useApi();
+  const { toast } = useToast();
   async function handleSubmit(session) {
     try {
       await apiFetch(`/sessions?groupId=${groupId}&session=${session}`, {
         method: "DELETE",
       });
+      toast.success(`${session} deleted.`);
+      setSession("");
     } catch (error) {
-      console.error(error);
+      toast.error(error.message);
     }
   }
   return (

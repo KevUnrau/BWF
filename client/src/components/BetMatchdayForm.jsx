@@ -1,12 +1,15 @@
 import MatchdayForm, { transformMatchObject } from "./MatchdayForm";
 import { useEffect, useState } from "react";
 import { useApi } from "../api/client";
+import { useToast } from "../context/ToastContext";
 
 function BetMatchdayForm({ matchday, session, group }) {
   const [matches, setMatches] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { apiFetch } = useApi();
+  const { toast } = useToast();
 
   useEffect(() => {
     async function fetchMatches() {
@@ -54,6 +57,7 @@ function BetMatchdayForm({ matchday, session, group }) {
 
   async function handleSubmit(event, matchResults) {
     event.preventDefault();
+    setIsSubmitting(true);
     const bets = transformMatchObject(matchResults);
     const body = {
       groupId: Number(group),
@@ -66,8 +70,11 @@ function BetMatchdayForm({ matchday, session, group }) {
         method: "PUT",
         body: JSON.stringify(body),
       });
+      toast.success("Bet submitted.");
     } catch (error) {
-      console.log(error);
+      toast.error(error.message);
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -84,6 +91,7 @@ function BetMatchdayForm({ matchday, session, group }) {
       loading={loading}
       error={error}
       submitHandler={handleSubmit}
+      isSubmitting={isSubmitting}
     ></MatchdayForm>
   );
 }

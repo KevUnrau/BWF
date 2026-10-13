@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useApi } from "../api/client";
+import { useToast } from "../context/ToastContext";
 
 function AddMember({ groupId }) {
   const [member, setMember] = useState("");
   const { apiFetch } = useApi();
+  const { toast } = useToast();
   async function handleSubmit(username) {
     try {
       const body = { invited: username, groupId };
@@ -11,8 +13,10 @@ function AddMember({ groupId }) {
         method: "POST",
         body: JSON.stringify(body),
       });
+      toast.success(`${member} invited.`);
+      setMember("");
     } catch (error) {
-      console.error(error);
+      toast.error(error.message);
     }
   }
   return (

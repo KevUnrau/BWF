@@ -1,6 +1,7 @@
 import { useAuth } from "../context/AuthContext";
 import { useFetchData } from "../hooks/useFetchData.js";
 import { useApi } from "../api/client.js";
+import { useToast } from "../context/ToastContext.jsx";
 import Invitation from "../components/Invitation.jsx";
 
 function Notification() {
@@ -12,6 +13,7 @@ function Notification() {
     error,
   } = useFetchData(user ? `/invitations` : null);
   const { apiFetch } = useApi();
+  const { toast } = useToast();
 
   async function handleDelete(id) {
     try {
@@ -23,7 +25,7 @@ function Notification() {
       });
       setNotifications(notifications);
     } catch (error) {
-      console.error(error.message);
+      toast.error(error.message);
     }
   }
 

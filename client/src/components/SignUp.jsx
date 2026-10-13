@@ -2,16 +2,19 @@ import { useState } from "react";
 import { useApi } from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "../context/ToastContext";
 
 function SignUp() {
   const [user, setUser] = useState({ mail: "", name: "", password: "" });
-  const [error, setError] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
   const { apiFetch } = useApi();
+  const { toast } = useToast();
 
   async function handleSubmit(event) {
     event.preventDefault();
+    setIsSubmitting(true);
     const body = user;
     try {
       const response = await apiFetch("/auth/signup", {
@@ -20,10 +23,11 @@ function SignUp() {
         credentials: "include",
       });
       login(response.user, response.token);
-      setError(null);
       navigate("/profile", { replace: true });
     } catch (error) {
-      setError(error.message);
+      toast.error(error.message);
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -58,9 +62,10 @@ function SignUp() {
             setUser({ ...user, password: event.target.value });
           }}
         ></input>
-        <button type="submit">Sign up</button>
+        <button disabled={isSubmitting} type="submit">
+          {isSubmitting ? "Signing up..." : "Sign up"}
+        </button>
       </form>
-      {error ? <p className="error">{error}</p> : undefined}
     </>
   );
 }

@@ -1,5 +1,6 @@
 import { useApi } from "../api/client";
 import { useState } from "react";
+import { useToast } from "../context/ToastContext";
 import InvitationDeleteButton from "./InvitationDeleteButton";
 function Invitation({
   id,
@@ -14,6 +15,7 @@ function Invitation({
   deleteHandler,
 }) {
   const { apiFetch } = useApi();
+  const { toast } = useToast();
   const [status, setStatus] = useState(responseStatus);
   const [responseDate, setResponseDate] = useState(new Date(respondedAt));
 
@@ -28,10 +30,11 @@ function Invitation({
         method: "PUT",
         body: JSON.stringify(body),
       });
+      toast.success(`You joined ${groupName}.`);
       setResponseDate(new Date());
       setStatus(`${response}ed`);
     } catch (error) {
-      console.error(error.message);
+      toast.error(error.message);
     }
   }
 

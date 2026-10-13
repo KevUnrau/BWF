@@ -7,11 +7,13 @@ import { useParams } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router";
 import { useFetchData } from "../hooks/useFetchData";
+import { useToast } from "../context/ToastContext";
 
 function GroupSettings() {
   const { groupId } = useParams();
   const { user } = useAuth();
   const { apiFetch } = useApi();
+  const { toast } = useToast();
   const navigate = useNavigate();
   const {
     data: role,
@@ -24,7 +26,7 @@ function GroupSettings() {
       await apiFetch(`/groups?id=${groupId}`, { method: "DELETE" });
       navigate("/group");
     } catch (error) {
-      console.error(error);
+      toast.error(error.message);
     }
   }
 
@@ -33,7 +35,7 @@ function GroupSettings() {
       await apiFetch(`/groups/${groupId}/leave`, { method: "DELETE" });
       navigate("/group");
     } catch (error) {
-      console.error(error);
+      toast.error(error.message);
     }
   }
 

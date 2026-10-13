@@ -1,16 +1,20 @@
 import { useState } from "react";
 import { useApi } from "../api/client";
+import { useToast } from "../context/ToastContext";
 
 function RemoveMember({ groupId }) {
   const [member, setMember] = useState("");
   const { apiFetch } = useApi();
+  const { toast } = useToast();
   async function handleSubmit(username) {
     try {
       await apiFetch(`/groups/${groupId}/members?member=${username}`, {
         method: "DELETE",
       });
+      toast.success(`${username} removed.`);
+      setMember("");
     } catch (error) {
-      console.error(error);
+      toast.error(error.message);
     }
   }
   return (
