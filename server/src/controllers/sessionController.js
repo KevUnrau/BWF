@@ -63,7 +63,7 @@ export const postSession = async (req, res, next) => {
   const body = req.body;
   try {
     await betService.createSession(body);
-    res.send({ message: "OK" });
+    res.status(201).send(body);
   } catch (error) {
     next(error);
   }
@@ -74,7 +74,7 @@ export const deleteSession = async (req, res, next) => {
   const name = req.query.session;
   try {
     await betRepository.deleteSession(groupId, name);
-    res.send({ message: "OK" });
+    res.sendStatus(204);
   } catch (error) {
     next(error);
   }

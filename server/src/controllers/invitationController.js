@@ -16,7 +16,7 @@ export const getUnreadInvitationsCount = async (req, res, next) => {
   try {
     const unreadInvitations =
       await groupRepository.countUnreadInvitationsByUser(user);
-    res.status(200).send(unreadInvitations);
+    res.send(unreadInvitations);
   } catch (error) {
     next(error);
   }
@@ -27,9 +27,7 @@ export const putInvitationsResponse = async (req, res, next) => {
   if (body.status === "accept") {
     try {
       await groupService.joinGroup(body.invitationId, body.groupId, req.user);
-      res.status(201).send({
-        message: "Member created.",
-      });
+      res.sendStatus(204);
     } catch (error) {
       next(error);
     }
@@ -39,9 +37,7 @@ export const putInvitationsResponse = async (req, res, next) => {
         body.invitationId,
         "decline",
       );
-      res.status(200).send({
-        message: "OK",
-      });
+      res.sendStatus(204);
     } catch (error) {
       next(error);
     }
@@ -53,7 +49,7 @@ export const postInvitation = async (req, res, next) => {
   const invitedBy = req.user;
   try {
     await groupService.createInvitation(groupId, invited, invitedBy);
-    res.send({ message: "OK" });
+    res.status(201).send(req.body);
   } catch (error) {
     next(error);
   }
@@ -64,7 +60,7 @@ export const deleteInvitation = async (req, res, next) => {
   const invitationId = Number(req.query.id);
   try {
     await groupService.deleteInvitation(user, invitationId);
-    res.send({ message: "OK" });
+    res.sendStatus(204);
   } catch (error) {
     next(error);
   }

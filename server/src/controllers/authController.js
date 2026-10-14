@@ -61,7 +61,7 @@ export const signOut = async (req, res) => {
     sameSite: "lax",
     path: "/auth",
   });
-  return res.status(200).json({ message: "Logged out successfully." });
+  return res.sendStatus(204);
 };
 
 export const refresh = async (req, res, next) => {
