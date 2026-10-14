@@ -166,6 +166,7 @@ model clubs {
   id                             Int                @id(map: "clubs_pk") @default(autoincrement())
   name                           String
   country_id                     String?            @db.Char(2)
+  logo_filename                  String?
   countries                      countries?         @relation(fields: [country_id], references: [code], map: "fk_clubs_country_id")
   matches_matches_away_idToclubs matches[]          @relation("matches_away_idToclubs")
   matches_matches_home_idToclubs matches[]          @relation("matches_home_idToclubs")
@@ -188,6 +189,7 @@ model competitions {
   country_id        String?            @db.Char(2)
   organizer_id      Int?
   type_id           Int?
+  logo_filename     String?
   betting_sessions  betting_sessions[]
   countries         countries?         @relation(fields: [country_id], references: [code], map: "fk_competitions_country_id")
   organizations     organizations?     @relation(fields: [organizer_id], references: [id], map: "fk_competitions_organizer_id")

@@ -45,11 +45,13 @@ export function findMatches({ competitionId, seasonId, round, db = prisma }) {
       clubs_matches_home_idToclubs: {
         select: {
           name: true,
+          logo_filename: true,
         },
       },
       clubs_matches_away_idToclubs: {
         select: {
           name: true,
+          logo_filename: true,
         },
       },
       kickoff_at: true,
@@ -85,7 +87,7 @@ export function updateMatchdayStatus({
 
 export function findCompetitions(db = prisma) {
   return db.competitions.findMany({
-    select: { id: true, name: true },
+    select: { id: true, name: true, logo_filename: true },
   });
 }
 

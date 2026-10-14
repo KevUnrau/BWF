@@ -23,8 +23,12 @@ export function findBets({
       ...(includeMatches && {
         matches: {
           select: {
-            clubs_matches_home_idToclubs: { select: { name: true } },
-            clubs_matches_away_idToclubs: { select: { name: true } },
+            clubs_matches_home_idToclubs: {
+              select: { name: true, logo_filename: true },
+            },
+            clubs_matches_away_idToclubs: {
+              select: { name: true, logo_filename: true },
+            },
             home_goals: true,
             away_goals: true,
           },
@@ -83,6 +87,7 @@ export function findSessions(groupId, db = prisma) {
     select: {
       id: true,
       name: true,
+      competitions: { select: { name: true, logo_filename: true } },
     },
     where: {
       group_id: groupId,

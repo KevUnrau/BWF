@@ -10,6 +10,7 @@ import GroupCreate from "./pages/GroupCreate.jsx";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import Admin from "./pages/Admin.jsx";
+import About from "./pages/About.jsx";
 import Notification from "./pages/Notification.jsx";
 import { useEffect } from "react";
 import { useApi } from "./api/client.js";
@@ -69,6 +70,7 @@ function App() {
           <Route path="/auth" element={<Auth signUp={false}></Auth>}></Route>
           <Route path="/profile" element={<Profile></Profile>}></Route>
           <Route path="/admin" element={<Admin></Admin>}></Route>
+          <Route path="about" element={<About></About>}></Route>
           <Route
             path="/notifications"
             element={<Notification></Notification>}

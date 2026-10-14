@@ -42,6 +42,9 @@ function Navbar() {
             <Link to={"/admin"}>Admin</Link>
           </li>
         )}
+        <li className="navbar-item">
+          <Link to={"/about"}>About</Link>
+        </li>
         <li
           id="mail"
           className="navbar-item ml-auto"
