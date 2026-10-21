@@ -70,7 +70,7 @@ function App() {
           <Route path="/auth" element={<Auth signUp={false}></Auth>}></Route>
           <Route path="/profile" element={<Profile></Profile>}></Route>
           <Route path="/admin" element={<Admin></Admin>}></Route>
-          <Route path="about" element={<About></About>}></Route>
+          <Route path="/about" element={<About></About>}></Route>
           <Route
             path="/notifications"
             element={<Notification></Notification>}
