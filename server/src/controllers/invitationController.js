@@ -24,7 +24,7 @@ export const getUnreadInvitationsCount = async (req, res, next) => {
 
 export const putInvitationsResponse = async (req, res, next) => {
   const body = req.body;
-  if (body.status === "accept") {
+  if (body.status === "accepted") {
     try {
       await groupService.joinGroup(body.invitationId, body.groupId, req.user);
       res.sendStatus(204);
@@ -35,7 +35,7 @@ export const putInvitationsResponse = async (req, res, next) => {
     try {
       await groupRepository.updateInvitationStatus(
         body.invitationId,
-        "decline",
+        "declined",
       );
       res.sendStatus(204);
     } catch (error) {

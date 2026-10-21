@@ -32,7 +32,8 @@ function Invitation({
       });
       toast.success(`You joined ${groupName}.`);
       setResponseDate(new Date());
-      setStatus(`${response}ed`);
+      setStatus(response);
+      toast.success(`You ${response}.`);
     } catch (error) {
       toast.error(error.message);
     }
@@ -95,7 +96,7 @@ function Invitation({
       <button
         className="ml-auto"
         onClick={() => {
-          handleInvitationResponse("accept");
+            handleInvitationResponse("accepted");
         }}
       >
         ✅
@@ -103,7 +104,7 @@ function Invitation({
       <button
         className="ms-2"
         onClick={() => {
-          handleInvitationResponse("decline");
+            handleInvitationResponse("declined");
         }}
       >
         ❌
