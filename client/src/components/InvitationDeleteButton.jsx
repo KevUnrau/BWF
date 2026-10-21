@@ -1,13 +1,17 @@
+import Button from "./Button";
+import { Trash } from "lucide-react";
+
 function InvitationDeleteButton({ id, deleteHandler }) {
   return (
-    <button
+    <Button
+      variant="icon"
       className="ml-auto"
       onClick={() => {
         deleteHandler(id);
       }}
     >
-      🗑️
-    </button>
+      <Trash></Trash>
+    </Button>
   );
 }
 

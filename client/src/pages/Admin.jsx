@@ -26,6 +26,7 @@ function Admin() {
 
   return (
     <>
+      <h2>Close Matchday</h2>
       <CompetitionSelection
         selectedCompetition={competition}
         changeHandler={handleCompetitionSelection}

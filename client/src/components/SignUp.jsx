@@ -1,3 +1,4 @@
+import Button from "./Button";
 import { useState } from "react";
 import { useApi } from "../api/client";
 import { useAuth } from "../context/AuthContext";
@@ -34,37 +35,44 @@ function SignUp() {
   return (
     <>
       <h2>Sign Up</h2>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="mail">Email:</label>
-        <input
-          id="mail"
-          type="email"
-          value={user.mail}
-          onChange={(event) => {
-            setUser({ ...user, mail: event.target.value });
-          }}
-        ></input>
-        <label htmlFor="username">Username:</label>
-        <input
-          id="username"
-          type="text"
-          value={user.name}
-          onChange={(event) => {
-            setUser({ ...user, name: event.target.value });
-          }}
-        ></input>
-        <label htmlFor="password">Password:</label>
-        <input
-          id="password"
-          type="password"
-          value={user.password}
-          onChange={(event) => {
-            setUser({ ...user, password: event.target.value });
-          }}
-        ></input>
-        <button disabled={isSubmitting} type="submit">
+      <form className="simple-form" onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor="mail">Email:</label>
+          <input
+            id="mail"
+            type="email"
+            value={user.mail}
+            onChange={(event) => {
+              setUser({ ...user, mail: event.target.value });
+            }}
+          ></input>
+        </div>
+        <div>
+          <label htmlFor="username">Username:</label>
+          <input
+            id="username"
+            type="text"
+            value={user.name}
+            onChange={(event) => {
+              setUser({ ...user, name: event.target.value });
+            }}
+          ></input>
+        </div>
+        <div>
+          <label htmlFor="password">Password:</label>
+          <input
+            id="password"
+            type="password"
+            value={user.password}
+            onChange={(event) => {
+              setUser({ ...user, password: event.target.value });
+            }}
+          ></input>
+        </div>
+
+        <Button disabled={isSubmitting} type="submit">
           {isSubmitting ? "Signing up..." : "Sign up"}
-        </button>
+        </Button>
       </form>
     </>
   );

@@ -49,12 +49,12 @@ function GroupTable({ sessionId, groupId }) {
     });
 
   return (
-    <table className="table-fixed border-collapse">
+    <table>
       <thead>
         <tr>
-          <th>Pos</th>
+          <th>Position</th>
           <th>Username</th>
-          <th>Pts</th>
+          <th>Total Points</th>
         </tr>
       </thead>
       <tbody>{tableRows}</tbody>

@@ -1,3 +1,4 @@
+import Button from "./Button";
 import { useState } from "react";
 import { useApi } from "../api/client";
 import { useToast } from "../context/ToastContext";
@@ -18,7 +19,7 @@ function RemoveMember({ groupId }) {
     }
   }
   return (
-    <>
+    <div className="single-input">
       <label htmlFor="removeMember">Remove member from group: </label>
       <input
         type="text"
@@ -29,15 +30,17 @@ function RemoveMember({ groupId }) {
         value={member}
         min={4}
         max={30}
+        placeholder="username"
       ></input>
-      <button
+      <Button
         onClick={() => {
           handleSubmit(member);
         }}
+        variant="danger"
       >
         Remove
-      </button>
-    </>
+      </Button>
+    </div>
   );
 }
 

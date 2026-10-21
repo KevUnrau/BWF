@@ -47,7 +47,7 @@ function BetCardList({ matchday, bettingSessionId, groupId }) {
   return (
     <>
       <ul>{betCards}</ul>
-      <div className="bet-card">
+      <div className="card">
         Total Points for matchday {matchday.round}: {totalPoints}
       </div>
     </>

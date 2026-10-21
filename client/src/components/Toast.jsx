@@ -1,3 +1,5 @@
+import Button from "./Button";
+
 function Toast({ message, type, deleteHandler }) {
   const styles = { success: "bg-green-600", error: "bg-red-600" };
   return (
@@ -5,9 +7,9 @@ function Toast({ message, type, deleteHandler }) {
       className={`${styles[type]} flex items-center gap-3 rounded p-4 text-white shadow-lg`}
     >
       <span>{message}</span>
-      <button type="button" onClick={deleteHandler}>
+      <Button variant="icon" type="button" onClick={deleteHandler}>
         x
-      </button>
+      </Button>
     </div>
   );
 }

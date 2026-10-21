@@ -2,6 +2,7 @@ import AddMember from "../components/AddMember";
 import RemoveMember from "../components/RemoveMember";
 import AddSession from "../components/AddSession";
 import RemoveSession from "../components/RemoveSession";
+import Button from "../components/Button";
 import { useApi } from "../api/client";
 import { useParams } from "react-router";
 import { useAuth } from "../context/AuthContext";
@@ -65,10 +66,12 @@ function GroupSettings() {
         <AddSession groupId={Number(groupId)}></AddSession>
         <RemoveSession groupId={Number(groupId)}></RemoveSession>
         <h2>General</h2>
-        <button onClick={handleLeave} className="mr-1">
+        <Button onClick={handleLeave} variant="danger">
           Leave Group
-        </button>
-        <button onClick={handleDelete}>Delete Group</button>
+        </Button>
+        <Button onClick={handleDelete} variant="danger">
+          Delete Group
+        </Button>
       </>
     );
   }

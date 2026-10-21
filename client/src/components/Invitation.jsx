@@ -2,6 +2,9 @@ import { useApi } from "../api/client";
 import { useState } from "react";
 import { useToast } from "../context/ToastContext";
 import InvitationDeleteButton from "./InvitationDeleteButton";
+import Button from "./Button";
+import { X, Check } from "lucide-react";
+
 function Invitation({
   id,
   invitedBy,
@@ -30,7 +33,6 @@ function Invitation({
         method: "PUT",
         body: JSON.stringify(body),
       });
-      toast.success(`You joined ${groupName}.`);
       setResponseDate(new Date());
       setStatus(response);
       toast.success(`You ${response}.`);
@@ -44,71 +46,66 @@ function Invitation({
 
   if (status !== "open") {
     return (
-      <div className="flex border rounded-sm p-1 m-1">
-        <p>
-          {invitedBy} asked you to join Group {groupName} on{" "}
-          {createdDate.toDateString()}. You {status} on{" "}
-          {responseDate.toDateString()}.
-        </p>
-        <InvitationDeleteButton
-          id={id}
-          deleteHandler={deleteHandler}
-        ></InvitationDeleteButton>
+      <div className="card">
+        <div className="flex">
+          <p>
+            {invitedBy} asked you to join Group {groupName} on{" "}
+            {createdDate.toDateString()}. You {status} on{" "}
+            {responseDate.toDateString()}.
+          </p>
+          <InvitationDeleteButton
+            id={id}
+            deleteHandler={deleteHandler}
+          ></InvitationDeleteButton>
+        </div>
       </div>
     );
   }
 
   if (new Date() > expiresDate) {
     return (
-      <div
-        className={
-          readAt
-            ? "flex border rounded-sm p-1 m-1"
-            : "flex border-2 rounded-sm p-1 m-1"
-        }
-      >
-        <p>
-          {invitedBy} asked you to join Group {groupName} on{" "}
-          {createdDate.toDateString()}. Invitation expired on{" "}
-          {expiresDate.toDateString()}.
-        </p>
-        <InvitationDeleteButton
-          id={id}
-          deleteHandler={deleteHandler}
-        ></InvitationDeleteButton>
+      <div className="card">
+        <div className={readAt ? "" : "font-bold"}>
+          <p>
+            {invitedBy} asked you to join Group {groupName} on{" "}
+            {createdDate.toDateString()}. Invitation expired on{" "}
+            {expiresDate.toDateString()}.
+          </p>
+          <InvitationDeleteButton
+            id={id}
+            deleteHandler={deleteHandler}
+          ></InvitationDeleteButton>
+        </div>
       </div>
     );
   }
 
   return (
-    <div
-      className={
-        readAt
-          ? "flex border rounded-sm p-1 m-1"
-          : "flex border-2 rounded-sm p-1 m-1"
-      }
-    >
-      <p>
-        {invitedBy} asked you to join Group {groupName} on{" "}
-        {createdDate.toDateString()}. Invitation expires on{" "}
-        {expiresDate.toDateString()}.
-      </p>
-      <button
-        className="ml-auto"
-        onClick={() => {
+    <div className="card">
+      <div className={readAt ? "flex" : "flex font-bold"}>
+        <p>
+          {invitedBy} asked you to join Group {groupName} on{" "}
+          {createdDate.toDateString()}. Invitation expires on{" "}
+          {expiresDate.toDateString()}.
+        </p>
+        <Button
+          variant="icon"
+          className="ml-auto"
+          onClick={() => {
             handleInvitationResponse("accepted");
-        }}
-      >
-        ✅
-      </button>
-      <button
-        className="ms-2"
-        onClick={() => {
+          }}
+        >
+          <Check color="green"></Check>
+        </Button>
+        <Button
+          variant="icon"
+          onClick={() => {
             handleInvitationResponse("declined");
-        }}
-      >
-        ❌
-      </button>
+          }}
+        >
+          <X color="red"></X>
+        </Button>
+      </div>
     </div>
   );
 }

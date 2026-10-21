@@ -1,3 +1,4 @@
+import Button from "./Button";
 import { useState } from "react";
 import { useApi } from "../api/client";
 import { useToast } from "../context/ToastContext";
@@ -18,7 +19,7 @@ function RemoveSession({ groupId }) {
     }
   }
   return (
-    <>
+    <div className="single-input">
       <label htmlFor="removeSession">Delete session: </label>
       <input
         type="text"
@@ -29,15 +30,17 @@ function RemoveSession({ groupId }) {
         value={session}
         min={2}
         max={30}
+        placeholder="session name"
       ></input>
-      <button
+      <Button
+        variant="danger"
         onClick={() => {
           handleSubmit(session);
         }}
       >
         Delete
-      </button>
-    </>
+      </Button>
+    </div>
   );
 }
 

@@ -1,4 +1,5 @@
 import MatchInput from "./MatchInput";
+import Button from "./Button";
 import { useState, useEffect, Fragment } from "react";
 
 function formatKickoff(timestamp) {
@@ -86,7 +87,9 @@ function MatchdayForm({
     kickoff = match.kickoff_at;
     return (
       <Fragment key={`match-${match.id}`}>
-        {showHeader && <p>{formatKickoff(new Date(kickoff))}</p>}
+        {showHeader && (
+          <p className="font-bold">{formatKickoff(new Date(kickoff))}</p>
+        )}
         <MatchInput
           match={match}
           result={
@@ -103,15 +106,15 @@ function MatchdayForm({
 
   return (
     <form
-      className="bet-form"
+      className="flex flex-col items-center"
       onSubmit={(event) => {
         submitHandler(event, matchResults);
       }}
     >
       {matchInputs}
-      <button disabled={isSubmitting} type="submit">
+      <Button disabled={isSubmitting} type="submit">
         {isSubmitting ? "Submitting..." : "Submit"}
-      </button>
+      </Button>
     </form>
   );
 }

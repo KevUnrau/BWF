@@ -3,14 +3,20 @@ import { Outlet, Link } from "react-router";
 function SessionLayout() {
   return (
     <>
-      <ul className="navbar">
-        <li className="navbar-item">
-          <Link to={"standings"}>Standings</Link>
-        </li>
-        <li className="navbar-item">
-          <Link to={"matches"}>Matches</Link>
-        </li>
-      </ul>
+      <nav className="my-2">
+        <ul className="flex border border-brand rounded-md bg-surface py-3 px-4 ">
+          <li>
+            <Link className="secondary-navbar-link" to={"standings"}>
+              Standings
+            </Link>
+          </li>
+          <li>
+            <Link className="secondary-navbar-link" to={"matches"}>
+              Matches
+            </Link>
+          </li>
+        </ul>
+      </nav>
       <Outlet></Outlet>
     </>
   );

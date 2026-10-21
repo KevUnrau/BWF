@@ -1,29 +1,69 @@
 @import "tailwindcss";
 
-h2 {
-  @apply text-xl font-bold mt-2;
+@theme {
+  --color-app-bg: #0d0d12;
+
+  --color-surface: #1e1e28;
+  --color-surface-hover: #353543;
+
+  --color-navbar: #6d28d9;
+  --color-navbar-hover: #5b21b6;
+
+  --color-brand: #8b5cf6;
+  --color-brand-hover: #a78bfa;
+
+  --color-text-primary: #f4f4f5;
+  --color-text-secondary: #a1a1aa;
+}
+
+html {
+  @apply bg-app-bg;
 }
 
 select {
-  @apply bg-gray-300 mx-1;
+  @apply bg-brand m-1 p-2 rounded-md hover:bg-brand-hover;
+}
+
+.primary-navbar-link {
+  @apply hover:bg-navbar-hover rounded-md transition-colors px-4 py-2 font-bold;
+}
+
+.secondary-navbar-link {
+  @apply hover:bg-surface-hover rounded-md transition-colors px-4 py-2 font-bold;
+}
+
+.surface-link {
+  @apply hover:bg-surface-hover rounded-md transition-colors p-2;
+}
+
+h2 {
+  @apply text-2xl font-bold mt-2;
+}
+
+h3 {
+  @apply text-xl font-bold mt-2;
 }
 
 .error {
-  @apply text-red-500;
+  @apply text-red-600;
+}
+
+input {
+  @apply bg-surface hover:bg-surface-hover border border-brand rounded-md p-2 mx-1 placeholder:text-text-secondary [appearance:textfield];
+}
+
+.card {
+  @apply bg-surface rounded-md p-2 my-2 border border-brand;
+}
+
+.club-icon {
+  @apply h-8 w-8 inline mx-1;
 }
 
 table,
 th,
 td {
-  @apply border-2;
-}
-
-.navbar {
-  @apply bg-gray-400 h-16 flex items-center;
-}
-
-.navbar-item {
-  @apply mr-2 p-2;
+  @apply table-fixed border-collapse bg-surface border border-brand p-2;
 }
 
 td.number {
@@ -34,38 +74,18 @@ td.text {
   @apply text-left;
 }
 
-.bet-form {
-  @apply flex flex-col items-center;
+.bullet-list {
+  @apply list-disc list-inside;
 }
 
-button {
-  @apply cursor-pointer bg-gray-300;
+form {
+  @apply bg-surface border border-brand rounded-md  p-2 my-2;
 }
 
-input {
-  @apply bg-gray-300;
+.simple-form {
+  @apply flex flex-col gap-2 items-baseline;
 }
 
-.bet-input {
-  @apply grid grid-cols-[1fr_60px_20px_60px_1fr] items-center gap-0.5 mb-1;
-}
-
-.away {
-  @apply text-left;
-}
-
-.home {
-  @apply text-right;
-}
-
-.colon {
-  @apply text-center;
-}
-
-.bet-card {
-  @apply border-gray-500 border border-r-2 p-1 m-2;
-}
-
-section {
-  @apply py-2;
+.single-input {
+  @apply bg-surface p-2 my-2 border border-brand rounded-md;
 }

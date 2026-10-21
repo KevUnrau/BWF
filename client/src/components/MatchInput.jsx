@@ -1,10 +1,10 @@
 function MatchInput({ match, changeHandler, result }) {
   return (
-    <div className="bet-input">
-      <label htmlFor={`home-${match.id}`} className="home">
+    <div className="grid grid-cols-[1fr_60px_20px_60px_1fr] items-center gap-0.5 mb-1">
+      <label htmlFor={`home-${match.id}`} className="text-right">
         {match.clubs_matches_home_idToclubs.name}
         <img
-          className="h-8 w-8 inline ml-1"
+          className="club-icon"
           src={match.clubs_matches_home_idToclubs.logo_filename}
           alt={match.clubs_matches_home_idToclubs.name}
         ></img>
@@ -22,8 +22,9 @@ function MatchInput({ match, changeHandler, result }) {
             awayGoals: result.awayGoals,
           });
         }}
+        placeholder="/"
       ></input>
-      <span className="colon">:</span>
+      <span className="text-center">:</span>
       <input
         type="number"
         min={0}
@@ -37,10 +38,11 @@ function MatchInput({ match, changeHandler, result }) {
               event.target.value === "" ? "" : Number(event.target.value),
           });
         }}
+        placeholder="/"
       ></input>
-      <label htmlFor={`away-${match.id}`} className="away">
+      <label htmlFor={`away-${match.id}`} className="text-left">
         <img
-          className="h-8 w-8 inline mr-1"
+          className="club-icon"
           src={match.clubs_matches_away_idToclubs.logo_filename}
           alt={match.clubs_matches_away_idToclubs.name}
         ></img>

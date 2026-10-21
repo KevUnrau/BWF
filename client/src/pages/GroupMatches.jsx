@@ -37,7 +37,7 @@ function GroupMatches() {
           group={groupId}
         ></BetMatchdayForm>
       </section>
-      <hr></hr>
+
       <section id="previous-bet">
         <h2>Prediction results</h2>
         <div>

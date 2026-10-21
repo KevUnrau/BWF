@@ -1,3 +1,4 @@
+import Button from "./Button.jsx";
 import { useState } from "react";
 import { useApi } from "../api/client.js";
 import { useAuth } from "../context/AuthContext";
@@ -38,29 +39,33 @@ function SignIn() {
 
   return (
     <>
-      <h2>Sign in </h2>{" "}
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="mail">Email:</label>
-        <input
-          id="mail"
-          type="email"
-          value={user.mail}
-          onChange={(event) => {
-            setUser({ ...user, mail: event.target.value });
-          }}
-        ></input>
-        <label htmlFor="password">Password:</label>
-        <input
-          id="password"
-          type="password"
-          value={user.password}
-          onChange={(event) => {
-            setUser({ ...user, password: event.target.value });
-          }}
-        ></input>
-        <button disabled={isSubmitting} type="submit">
+      <h2>Sign in </h2>
+      <form className="simple-form" onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor="mail">Email:</label>
+          <input
+            id="mail"
+            type="email"
+            value={user.mail}
+            onChange={(event) => {
+              setUser({ ...user, mail: event.target.value });
+            }}
+          ></input>
+        </div>
+        <div>
+          <label htmlFor="password">Password:</label>
+          <input
+            id="password"
+            type="password"
+            value={user.password}
+            onChange={(event) => {
+              setUser({ ...user, password: event.target.value });
+            }}
+          ></input>
+        </div>
+        <Button disabled={isSubmitting} type="submit">
           {isSubmitting ? "Logging in..." : "Login"}
-        </button>
+        </Button>
       </form>
     </>
   );

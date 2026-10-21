@@ -1,3 +1,4 @@
+import Button from "./Button";
 import { useState } from "react";
 import { useApi } from "../api/client";
 import { useToast } from "../context/ToastContext";
@@ -21,7 +22,7 @@ function AddGroup() {
     }
   }
   return (
-    <>
+    <div className="single-input">
       <label htmlFor="addGroup">Create group: </label>
       <input
         type="text"
@@ -32,15 +33,16 @@ function AddGroup() {
         value={group}
         min={4}
         max={50}
+        placeholder="group name"
       ></input>
-      <button
+      <Button
         onClick={() => {
           handleSubmit(group);
         }}
       >
         Create
-      </button>
-    </>
+      </Button>
+    </div>
   );
 }
 

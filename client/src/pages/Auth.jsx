@@ -4,6 +4,7 @@ import SignUp from "../components/SignUp";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useEffect } from "react";
+import Button from "../components/Button";
 
 function Auth({ signUp }) {
   const [isSignUp, setIsSignUp] = useState(signUp);
@@ -19,14 +20,13 @@ function Auth({ signUp }) {
       <SignUp></SignUp>
       <p>
         Already have an account?{" "}
-        <button
+        <Button
           onClick={() => {
             setIsSignUp(false);
           }}
         >
           Sign in
-        </button>
-        .
+        </Button>
       </p>
     </>
   ) : (
@@ -34,14 +34,13 @@ function Auth({ signUp }) {
       <SignIn></SignIn>
       <p>
         No account yet?{" "}
-        <button
+        <Button
           onClick={() => {
             setIsSignUp(true);
           }}
         >
           Create one
-        </button>
-        .
+        </Button>
       </p>
     </>
   );

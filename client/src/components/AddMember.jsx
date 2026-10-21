@@ -1,3 +1,4 @@
+import Button from "./Button";
 import { useState } from "react";
 import { useApi } from "../api/client";
 import { useToast } from "../context/ToastContext";
@@ -20,7 +21,7 @@ function AddMember({ groupId }) {
     }
   }
   return (
-    <>
+    <div className="single-input">
       <label htmlFor="addMember">Invite member to group: </label>
       <input
         type="text"
@@ -31,15 +32,16 @@ function AddMember({ groupId }) {
         value={member}
         min={4}
         max={30}
+        placeholder="username"
       ></input>
-      <button
+      <Button
         onClick={() => {
           handleSubmit(member);
         }}
       >
         Invite
-      </button>
-    </>
+      </Button>
+    </div>
   );
 }
 
