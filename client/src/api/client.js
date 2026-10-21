@@ -14,7 +14,7 @@ export const useApi = () => {
       };
       let opt = { ...options, headers: headers };
       let response = await fetch(`${API_BASE_URL}${endpoint}`, opt);
-      let data = await response.json();
+      let data = response.status !== 204 ? await response.json() : null;
       if (!response.ok) {
         const error = new Error(data.message);
         error.status = response.status;
