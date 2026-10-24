@@ -5,6 +5,7 @@ const env = {
   nodeEnv: process.env.NODE_ENV,
   jwtAccessSecret: process.env.JWT_ACCESS_SECRET,
   jwtRefreshSecret: process.env.JWT_REFRESH_SECRET,
+  clientOrigin: process.env.CLIENT_ORIGIN,
 };
 
 export default env;
