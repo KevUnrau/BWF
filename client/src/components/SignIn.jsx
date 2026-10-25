@@ -46,6 +46,7 @@ function SignIn() {
           <input
             id="mail"
             type="email"
+            placeholder="mail"
             value={user.mail}
             onChange={(event) => {
               setUser({ ...user, mail: event.target.value });
@@ -57,6 +58,7 @@ function SignIn() {
           <input
             id="password"
             type="password"
+            placeholder="password"
             value={user.password}
             onChange={(event) => {
               setUser({ ...user, password: event.target.value });
