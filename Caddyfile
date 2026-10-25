@@ -1,0 +1,20 @@
+www.betwithfriends.de {
+	redir https://betwithfriends.de{uri} permanent
+}
+
+betwithfriends.de {
+
+	encode zstd gzip
+
+	# Forward API requests to Express
+	handle_path /api/* {
+		reverse_proxy backend:3000
+	}
+
+	# Serve the React frontend
+	handle {
+		root * /srv
+		try_files {path} /index.html
+		file_server
+	}
+}
