@@ -6,7 +6,7 @@ const refreshProps = {
   secure: env.nodeEnv === "production", // Only send over HTTPS in production
   sameSite: "lax", // Protects against CSRF attacks ('strict' or 'lax')
   maxAge: 30 * 24 * 60 * 60 * 1000, // Cookie expiration in milliseconds (e.g., 7 days)
-  path: "/auth", // Optional: Restrict cookie transmission strictly to auth endpoints
+  path: env.nodeEnv === "production" ? "/api/auth" : "/auth", // Optional: Restrict cookie transmission strictly to auth endpoints
 };
 
 export const signUp = async (req, res, next) => {
