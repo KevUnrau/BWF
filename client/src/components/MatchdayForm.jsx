@@ -75,10 +75,7 @@ function MatchdayForm({
   }
 
   const sortedMatches = matches.sort((a, b) => {
-    if (a.kickoff_at < b.kickoff_at) {
-      return -1;
-    }
-    return 1;
+    return a.kickoff_at - b.kickoff_at;
   });
 
   let kickoff;
