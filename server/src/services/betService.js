@@ -55,14 +55,14 @@ export function closeMatchday(body, recalculate) {
     if (!recalculate) {
       await sportRepository.updateMatchdayStatus({
         status: 2,
-        matchday: body.matchday,
+        matchday: body.matchday.round,
         competitionId: body.competition,
         seasonId: body.season,
         db: tx,
       });
       await sportRepository.updateMatchdayStatus({
         status: 3,
-        matchday: String(Number(body.matchday) + 1),
+        matchday: String(Number(body.matchday.round) + 1),
         competitionId: body.competition,
         seasonId: body.season,
         db: tx,

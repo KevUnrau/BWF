@@ -38,12 +38,14 @@ function AdminMatchdayForm({ competition, season, matchday }) {
           body: JSON.stringify(body),
         });
         toast.success("Matchday closed.");
-      } else {
+      } else if (matchday.match_status.name === "closed") {
         await apiFetch("/matchdays/recalculate", {
           method: "POST",
           body: JSON.stringify(body),
         });
         toast.success("Matchday recalculated.");
+      } else {
+        throw new Error("You can't close a matchday that is not in progress.");
       }
     } catch (error) {
       toast.error(error.message);
