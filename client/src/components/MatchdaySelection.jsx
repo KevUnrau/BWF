@@ -16,7 +16,7 @@ function MatchdaySelection({
   }
 
   const sortedMatchdays = matchdays.sort((a, b) => {
-    if (a.round > b.round) {
+    if (Number(a.round) > Number(b.round)) {
       return 1;
     } else {
       return -1;
@@ -35,7 +35,7 @@ function MatchdaySelection({
       <label htmlFor="matchday-selection">Matchday:</label>
       <select
         id="matchday-selection"
-        value={selectedMatchday.round}
+        value={selectedMatchday ? selectedMatchday.round : ""}
         onChange={(event) => {
           if (event.target.value) {
             changeHandler(
