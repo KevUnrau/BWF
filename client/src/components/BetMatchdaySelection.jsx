@@ -27,7 +27,7 @@ function BetMatchdaySelection({
     if (initValue === "min") {
       changeHandler(
         matchdays.reduce((previousValue, currentValue) => {
-          if (previousValue.round < currentValue.round) {
+          if (Number(previousValue.round) < Number(currentValue.round)) {
             return previousValue;
           } else {
             return currentValue;
@@ -37,7 +37,7 @@ function BetMatchdaySelection({
     } else {
       changeHandler(
         matchdays.reduce((previousValue, currentValue) => {
-          if (previousValue.round > currentValue.round) {
+          if (Number(previousValue.round) > Number(currentValue.round)) {
             return previousValue;
           } else {
             return currentValue;
