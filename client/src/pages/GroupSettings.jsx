@@ -79,9 +79,9 @@ function GroupSettings() {
   return (
     <>
       <h2>General</h2>
-      <button onClick={handleLeave} className="mr-1">
+      <Button onClick={handleLeave} variant="danger">
         Leave Group
-      </button>
+      </Button>
     </>
   );
 }
