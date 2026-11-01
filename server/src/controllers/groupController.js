@@ -35,7 +35,7 @@ export const deleteMember = async (req, res, next) => {
 };
 
 export const deleteGroup = async (req, res, next) => {
-  const groupId = Number(req.query.id);
+  const groupId = Number(req.params.groupId);
   try {
     await groupRepository.deleteGroup(groupId);
     res.sendStatus(204);

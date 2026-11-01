@@ -24,7 +24,7 @@ function GroupSettings() {
 
   async function handleDelete() {
     try {
-      await apiFetch(`/groups?id=${groupId}`, { method: "DELETE" });
+      await apiFetch(`/groups/${groupId}`, { method: "DELETE" });
       navigate("/group");
     } catch (error) {
       toast.error(error.message);
