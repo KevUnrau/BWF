@@ -1,5 +1,5 @@
 import * as groupRepository from "../repositories/groupRepository.js";
-import * as groupService from "../services/groupServices.js";
+import * as groupService from "../services/groupService.js";
 
 export const getInvitiationsByUser = async (req, res, next) => {
   const userId = Number(req.user);

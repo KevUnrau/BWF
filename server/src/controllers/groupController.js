@@ -1,6 +1,6 @@
 import * as betRepository from "../repositories/betRepository.js";
 import * as groupRepository from "../repositories/groupRepository.js";
-import * as groupService from "../services/groupServices.js";
+import * as groupService from "../services/groupService.js";
 
 export const getGroupsByUser = async (req, res, next) => {
   try {
