@@ -150,7 +150,7 @@ export function findInvitation(id, db = prisma) {
   return db.invitations.findFirst({
     select: {
       invited_user_id: true,
-      invitation_status: true,
+      invitation_status: { select: { name: true } },
       expires_at: true,
     },
     where: { id },
