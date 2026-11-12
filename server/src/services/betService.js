@@ -4,7 +4,7 @@ import * as betRepository from "../repositories/betRepository.js";
 import * as groupRepository from "../repositories/groupRepository.js";
 import { ConflictError } from "../errors/AppError.js";
 
-function calcBetPoints(
+export function calcBetPoints(
   matchHomeGoals,
   matchAwayGoals,
   betHomeGoals,
