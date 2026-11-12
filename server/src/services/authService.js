@@ -8,7 +8,7 @@ import crypto from "node:crypto";
 const accessSecret = new TextEncoder().encode(env.jwtAccessSecret);
 const refreshSecret = new TextEncoder().encode(env.jwtRefreshSecret);
 
-function hashSHA256(token) {
+export function hashSHA256(token) {
   return crypto.createHash("sha256").update(token).digest("hex");
 }
 
@@ -36,7 +36,7 @@ export async function createSession(userId) {
       .sign(refreshSecret),
   ]);
 
-  const claims = await decodeJwt(refreshToken);
+  const claims = decodeJwt(refreshToken);
   const refreshTokenHash = hashSHA256(refreshToken);
 
   await authRepository.createSession(userId, refreshTokenHash, claims);
@@ -78,34 +78,15 @@ export async function refresh(refreshToken) {
     throw new InvalidCredentialsError();
   }
   if (tokenClaims.expires_at > new Date() && !tokenClaims.revoked_at) {
-    const [token, refreshToken] = await Promise.all([
-      new SignJWT({})
-        .setProtectedHeader({ alg: "HS256" })
-        .setSubject(tokenClaims.users.id)
-        .setExpirationTime("15m")
-        .sign(accessSecret),
-      new SignJWT({})
-        .setProtectedHeader({ alg: "HS256" })
-        .setSubject(tokenClaims.users.id)
-        .setIssuedAt()
-        .setExpirationTime("30d")
-        .sign(refreshSecret),
-    ]);
+    const token = await new SignJWT({})
+      .setProtectedHeader({ alg: "HS256" })
+      .setSubject(tokenClaims.users.id)
+      .setExpirationTime("15m")
+      .sign(accessSecret);
 
-    const newTokenClaims = await decodeJwt(refreshToken);
-    const newRefreshTokenHash = hashSHA256(refreshToken);
-
-    /*
-    await authRepository.updateToken(
-      refreshTokenHash,
-      newRefreshTokenHash,
-      newTokenClaims,
-    );
-    */
     return {
       user: tokenClaims.users,
       token: token,
-      refreshToken: refreshToken,
     };
   } else {
     throw new InvalidCredentialsError();

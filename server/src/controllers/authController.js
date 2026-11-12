@@ -1,12 +1,12 @@
 import * as authService from "../services/authService.js";
 import env from "../config/env.js";
 
-const refreshProps = {
+const cookieProps = {
   httpOnly: true, // Prevents client-side JS from reading the cookie (XSS protection)
   secure: env.nodeEnv === "production", // Only send over HTTPS in production
   sameSite: "lax", // Protects against CSRF attacks ('strict' or 'lax')
-  maxAge: 30 * 24 * 60 * 60 * 1000, // Cookie expiration in milliseconds (e.g., 7 days)
-  path: env.nodeEnv === "production" ? "/api/auth" : "/auth", // Optional: Restrict cookie transmission strictly to auth endpoints
+  maxAge: 30 * 24 * 60 * 60 * 1000, // Cookie expiration in milliseconds (30 days)
+  path: env.nodeEnv === "production" ? "/api/auth" : "/auth", //Restrict cookie transmission strictly to auth endpoints
 };
 
 export const signUp = async (req, res, next) => {
@@ -15,7 +15,7 @@ export const signUp = async (req, res, next) => {
     const user = await authService.createUser(body);
     try {
       const tokens = await authService.createSession(user.id);
-      res.cookie("refreshToken", tokens.refreshToken, refreshProps);
+      res.cookie("refreshToken", tokens.refreshToken, cookieProps);
       return res.status(201).send({
         message: "User created.",
         token: tokens.token,
@@ -34,7 +34,7 @@ export const signIn = async (req, res, next) => {
   const body = req.body;
   try {
     const { user, tokens } = await authService.signIn(body);
-    res.cookie("refreshToken", tokens.refreshToken, refreshProps);
+    res.cookie("refreshToken", tokens.refreshToken, cookieProps);
     return res.status(200).send({
       message: "Login successful.",
       token: tokens.token,
@@ -56,10 +56,10 @@ export const signOut = async (req, res) => {
     }
   }
   res.clearCookie("refreshToken", {
-    httpOnly: true,
-    secure: env.nodeEnv === "production",
-    sameSite: "lax",
-    path: "/auth",
+    httpOnly: cookieProps.httpOnly,
+    secure: cookieProps.secure,
+    sameSite: cookieProps.sameSite,
+    path: cookieProps.path,
   });
   return res.sendStatus(204);
 };
@@ -68,7 +68,6 @@ export const refresh = async (req, res, next) => {
   const refreshToken = req.cookies.refreshToken;
   try {
     const refresh = await authService.refresh(refreshToken);
-    //res.cookie("refreshToken", refresh.refreshToken, refreshProps);
     return res.status(200).json({
       message: "refresh successful",
       token: refresh.token,
