@@ -45,14 +45,13 @@ export async function removeMember({ groupId, username, userId }) {
       await betRepository.deleteBets(session.id, memberId, tx);
     }
     await groupRepository.deleteMember(groupId, memberId, tx);
-    const membersLeft = await groupRepository.findMembersByGroup(groupId, tx);
-    if (membersLeft.length === 0) {
+    const members = await groupRepository.findMembersByGroup(groupId, tx);
+    if (members.length === 0) {
       await groupRepository.deleteGroup(groupId, tx);
       return;
     }
     const adminsLeft = await groupRepository.countAdmins(groupId, tx);
     if (adminsLeft === 0) {
-      const members = await groupRepository.findMembersByGroup(groupId, tx);
       const oldestMember = members.reduce((accumulator, current) => {
         if (accumulator.joined_at <= current.joined_at) {
           return accumulator;
