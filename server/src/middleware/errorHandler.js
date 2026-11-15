@@ -1,31 +1,12 @@
-import { Prisma } from "@prisma/client";
-import { AppError, ConflictError, NotFoundError } from "../errors/AppError.js";
+import { AppError } from "../errors/AppError.js";
 function errorHandler(err, req, res, next) {
-  let error = err;
-  if (error instanceof Prisma.PrismaClientKnownRequestError) {
-    switch (error.code) {
-      case "P2002": {
-        error = new ConflictError();
-        break;
-      }
-      case "P2025": {
-        error = new NotFoundError();
-        break;
-      }
-      default: {
-        error = new AppError(`Database operation failed: ${error.code}`);
-        break;
-      }
-    }
-  }
-
-  if (error instanceof AppError) {
+  if (err instanceof AppError) {
     return res
-      .status(error.statusCode)
-      .json({ status: "fail", message: error.message, error: error.name });
+      .status(err.statusCode)
+      .json({ status: "fail", message: err.message, error: err.name });
   }
 
-  console.error("UNHANDLED ERROR:", error);
+  console.error("UNHANDLED ERROR:", err);
   return res.status(500).json({
     status: "error",
     message: "Something went wrong on our end.",
