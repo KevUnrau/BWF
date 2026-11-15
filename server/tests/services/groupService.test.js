@@ -1,8 +1,8 @@
 import { vi, describe, it, expect, beforeEach } from "vitest";
-import prisma, { tx } from "../mocks/prisma.js";
-import groupRepository from "../mocks/groupRepository.js";
-import betRepository from "../mocks/betRepository.js";
-import authRepository from "../mocks/authRepository.js";
+import prisma, { tx } from "../mocks/repositories/prisma.js";
+import groupRepository from "../mocks/repositories/groupRepository.js";
+import betRepository from "../mocks/repositories/betRepository.js";
+import authRepository from "../mocks/repositories/authRepository.js";
 import { mockSessions } from "../fixtures/bet.js";
 import {
   mockMembers,
@@ -21,7 +21,6 @@ describe("joinGroup", () => {
   const userId = 42;
 
   beforeEach(() => {
-    vi.clearAllMocks();
     groupRepository.countMembers.mockResolvedValue(24);
   });
 
@@ -102,8 +101,6 @@ describe("removeMember", () => {
   const groupId = 13;
 
   beforeEach(() => {
-    vi.clearAllMocks();
-
     betRepository.findSessions.mockResolvedValue(mockSessions);
     authRepository.findUserByName.mockResolvedValue(mockUser);
     betRepository.deleteStanding.mockResolvedValue();

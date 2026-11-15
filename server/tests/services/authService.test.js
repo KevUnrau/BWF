@@ -1,6 +1,6 @@
 import { vi, describe, it, expect, beforeEach } from "vitest";
-import authRepository from "../mocks/authRepository.js";
-import argon2 from "../mocks/argon2.js";
+import authRepository from "../mocks/repositories/authRepository.js";
+import argon2 from "../mocks/repositories/argon2.js";
 import { mockUser } from "../fixtures/auth.js";
 import * as authService from "../../src/services/authService.js";
 

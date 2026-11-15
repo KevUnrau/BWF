@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import sportRepository from "../mocks/sportRepository.js";
-import betRepository from "../mocks/betRepository.js";
+import sportRepository from "../mocks/repositories/sportRepository.js";
+import betRepository from "../mocks/repositories/betRepository.js";
 import { mockSession } from "../fixtures/bet.js";
 import * as sportService from "../../src/services/sportService.js";
 

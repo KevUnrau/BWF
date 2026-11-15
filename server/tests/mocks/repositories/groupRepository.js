@@ -1,7 +1,7 @@
 import { vi } from "vitest";
-import * as groupRepository from "../../src/repositories/groupRepository.js";
+import * as groupRepository from "../../../src/repositories/groupRepository.js";
 
-vi.mock("../../src/repositories/groupRepository.js", () => ({
+vi.mock("../../../src/repositories/groupRepository.js", () => ({
   findMembersByGroup: vi.fn(),
   countMembers: vi.fn(),
   findInvitation: vi.fn(),
@@ -16,6 +16,7 @@ vi.mock("../../src/repositories/groupRepository.js", () => ({
   findInvitationsByUser: vi.fn(),
   updateInvitationsReadStatus: vi.fn(),
   deleteInvitation: vi.fn(),
+  findMember: vi.fn(),
 }));
 
 export default groupRepository;

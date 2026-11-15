@@ -1,7 +1,7 @@
 import { vi } from "vitest";
-import * as betRepository from "../../src/repositories/betRepository.js";
+import * as betRepository from "../../../src/repositories/betRepository.js";
 
-vi.mock("../../src/repositories/betRepository.js", () => ({
+vi.mock("../../../src/repositories/betRepository.js", () => ({
   findBetsByMatch: vi.fn(),
   calcStandings: vi.fn(),
   updateStanding: vi.fn(),

@@ -1,9 +1,9 @@
 import { vi, describe, it, expect, beforeEach } from "vitest";
 //important to import mock modules before the service, else the service uses the original modules
-import prisma, { tx } from "../mocks/prisma.js";
-import groupRepository from "../mocks/groupRepository.js";
-import betRepository from "../mocks/betRepository.js";
-import sportRepository from "../mocks/sportRepository.js";
+import prisma, { tx } from "../mocks/repositories/prisma.js";
+import groupRepository from "../mocks/repositories/groupRepository.js";
+import betRepository from "../mocks/repositories/betRepository.js";
+import sportRepository from "../mocks/repositories/sportRepository.js";
 import { mockMembers } from "../fixtures/group.js";
 import { mockMatches } from "../fixtures/sport.js";
 import { mockCalcStandings, mockBets, mockSession } from "../fixtures/bet.js";
@@ -101,8 +101,6 @@ describe("closeMatchday", () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
-
     betRepository.findBetsByMatch.mockResolvedValue(mockBets);
 
     betRepository.calcStandings.mockResolvedValue(mockCalcStandings);
@@ -224,8 +222,6 @@ describe("putBets", async () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
-
     betRepository.findSessionById.mockResolvedValue(mockSession);
 
     sportRepository.findMatchdayStatus.mockResolvedValue({
