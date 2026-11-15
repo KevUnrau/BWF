@@ -9,6 +9,14 @@ export const mockGroup = {
   created_at: new Date("2026-11-09T18:00:00.000Z"),
 };
 
+export const mockMemberRole = {
+  member_roles: { name: "member" },
+};
+
+export const mockAdminRole = {
+  member_roles: { name: "admin" },
+};
+
 export const groupRoles = {
   admin: 1,
   member: 2,
