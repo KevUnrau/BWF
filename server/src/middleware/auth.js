@@ -7,8 +7,8 @@ import { verifyToken } from "../services/authService.js";
 import * as authRepository from "../repositories/authRepository.js";
 import * as groupRepository from "../repositories/groupRepository.js";
 
-function extractGroup(req) {
-  return req.params.groupId ?? req.query.groupId ?? req.body.groupId;
+export function extractGroup(req) {
+  return Number(req.params.groupId ?? req.query.groupId ?? req.body.groupId);
 }
 
 export async function auth(req, res, next) {
@@ -23,12 +23,13 @@ export async function auth(req, res, next) {
     }
 
     const { payload } = await verifyToken(token);
+    //add user id to request for the following middlewares
     req.user = payload.sub;
   } catch (error) {
     if ((error.code = "ERR_JWT_EXPIRED")) {
       error = new TokenExpiredError();
     }
-    next(error);
+    return next(error);
   }
   return next();
 }
@@ -41,7 +42,7 @@ export async function adminAuth(req, res, next) {
       throw new ForbiddenError();
     }
   } catch (error) {
-    next(error);
+    return next(error);
   }
   return next();
 }
@@ -50,12 +51,12 @@ export async function groupMemberAuth(req, res, next) {
   try {
     const user = req.user;
     const group = extractGroup(req);
-    const member = await groupRepository.findMember(user, Number(group));
+    const member = await groupRepository.findMember(user, group);
     if (!member) {
       throw new ForbiddenError();
     }
   } catch (error) {
-    next(error);
+    return next(error);
   }
   return next();
 }
@@ -64,15 +65,12 @@ export async function groupAdminAuth(req, res, next) {
   try {
     const user = req.user;
     const group = extractGroup(req);
-    const { member_roles: role } = await groupRepository.findMember(
-      user,
-      Number(group),
-    );
-    if (role.name !== "admin") {
+    const member = await groupRepository.findMember(user, group);
+    if (!member || member.member_roles.name !== "admin") {
       throw new ForbiddenError();
     }
   } catch (error) {
-    next(error);
+    return next(error);
   }
   return next();
 }
