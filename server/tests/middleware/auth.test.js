@@ -2,6 +2,7 @@ import { vi, describe, it, expect } from "vitest";
 import authService from "../mocks/services/authService.js";
 import authRepository from "../mocks/repositories/authRepository.js";
 import groupRepository from "../mocks/repositories/groupRepository.js";
+import { next, res } from "../mocks/modules/express.js";
 import { mockGroup, mockMemberRole, mockAdminRole } from "../fixtures/group.js";
 import { mockUser, mockAdminUser, mockNonAdminUser } from "../fixtures/auth.js";
 import {
@@ -10,9 +11,6 @@ import {
   ForbiddenError,
 } from "../../src/errors/AppError.js";
 import * as auth from "../../src/middleware/auth.js";
-
-const res = {};
-const next = vi.fn();
 
 describe("extractGroup", () => {
   it.each([
