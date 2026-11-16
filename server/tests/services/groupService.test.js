@@ -1,5 +1,5 @@
 import { vi, describe, it, expect, beforeEach } from "vitest";
-import prisma, { tx } from "../mocks/repositories/prisma.js";
+import prisma, { tx } from "../mocks/modules/prisma.js";
 import groupRepository from "../mocks/repositories/groupRepository.js";
 import betRepository from "../mocks/repositories/betRepository.js";
 import authRepository from "../mocks/repositories/authRepository.js";
