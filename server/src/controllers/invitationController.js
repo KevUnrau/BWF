@@ -1,5 +1,6 @@
 import * as groupRepository from "../repositories/groupRepository.js";
 import * as groupService from "../services/groupService.js";
+import { httpStatus } from "../constants/httpStatus.js";
 
 export const getInvitiationsByUser = async (req, res, next) => {
   const userId = Number(req.user);
@@ -27,7 +28,7 @@ export const putInvitationsResponse = async (req, res, next) => {
   if (body.status === "accepted") {
     try {
       await groupService.joinGroup(body.invitationId, body.groupId, req.user);
-      res.sendStatus(204);
+      res.sendStatus(httpStatus.noContent);
     } catch (error) {
       next(error);
     }
@@ -37,7 +38,7 @@ export const putInvitationsResponse = async (req, res, next) => {
         body.invitationId,
         "declined",
       );
-      res.sendStatus(204);
+      res.sendStatus(httpStatus.noContent);
     } catch (error) {
       next(error);
     }
@@ -49,7 +50,7 @@ export const postInvitation = async (req, res, next) => {
   const invitedBy = req.user;
   try {
     await groupService.createInvitation(groupId, invited, invitedBy);
-    res.status(201).send(req.body);
+    res.status(httpStatus.created).send(req.body);
   } catch (error) {
     next(error);
   }
@@ -60,7 +61,7 @@ export const deleteInvitation = async (req, res, next) => {
   const invitationId = Number(req.query.id);
   try {
     await groupService.deleteInvitation(user, invitationId);
-    res.sendStatus(204);
+    res.sendStatus(httpStatus.noContent);
   } catch (error) {
     next(error);
   }

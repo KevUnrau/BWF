@@ -1,5 +1,6 @@
 import * as authService from "../services/authService.js";
 import env from "../config/env.js";
+import { httpStatus } from "../constants/httpStatus.js";
 
 const cookieProps = {
   httpOnly: true, // Prevents client-side JS from reading the cookie (XSS protection)
@@ -16,14 +17,16 @@ export const signUp = async (req, res, next) => {
     try {
       const tokens = await authService.createSession(user.id);
       res.cookie("refreshToken", tokens.refreshToken, cookieProps);
-      return res.status(201).send({
+      return res.status(httpStatus.created).send({
         message: "User created.",
         token: tokens.token,
         user: user,
         refreshToken: tokens.refreshToken,
       });
     } catch (error) {
-      return res.status(201).send({ message: "User created. Please log in." });
+      return res
+        .status(httpStatus.created)
+        .send({ message: "User created. Please log in." });
     }
   } catch (error) {
     return next(error);
@@ -35,7 +38,7 @@ export const signIn = async (req, res, next) => {
   try {
     const { user, tokens } = await authService.signIn(body);
     res.cookie("refreshToken", tokens.refreshToken, cookieProps);
-    return res.status(200).send({
+    return res.status(httpStatus.ok).send({
       message: "Login successful.",
       token: tokens.token,
       user: user,
@@ -61,14 +64,14 @@ export const signOut = async (req, res) => {
     sameSite: cookieProps.sameSite,
     path: cookieProps.path,
   });
-  return res.sendStatus(204);
+  return res.sendStatus(httpStatus.noContent);
 };
 
 export const refresh = async (req, res, next) => {
   const refreshToken = req.cookies.refreshToken;
   try {
     const refresh = await authService.refresh(refreshToken);
-    return res.status(200).json({
+    return res.status(httpStatus.ok).json({
       message: "refresh successful",
       token: refresh.token,
       user: refresh.user,

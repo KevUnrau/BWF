@@ -1,6 +1,7 @@
 import * as betRepository from "../repositories/betRepository.js";
 import * as groupRepository from "../repositories/groupRepository.js";
 import * as groupService from "../services/groupService.js";
+import { httpStatus } from "../constants/httpStatus.js";
 
 export const getGroupsByUser = async (req, res, next) => {
   try {
@@ -28,7 +29,7 @@ export const deleteMember = async (req, res, next) => {
   const memberName = req.query.member;
   try {
     await groupService.removeMember({ groupId: groupId, username: memberName });
-    res.sendStatus(204);
+    res.sendStatus(httpStatus.noContent);
   } catch (error) {
     next(error);
   }
@@ -38,7 +39,7 @@ export const deleteGroup = async (req, res, next) => {
   const groupId = Number(req.params.groupId);
   try {
     await groupRepository.deleteGroup(groupId);
-    res.sendStatus(204);
+    res.sendStatus(httpStatus.noContent);
   } catch (error) {
     next(error);
   }
@@ -49,7 +50,7 @@ export const leaveGroup = async (req, res, next) => {
   const groupId = Number(req.params.groupId);
   try {
     await groupService.removeMember({ groupId: groupId, userId: user });
-    res.sendStatus(204);
+    res.sendStatus(httpStatus.noContent);
   } catch (error) {
     next(error);
   }
@@ -60,7 +61,7 @@ export const postGroup = async (req, res, next) => {
   const { groupName } = req.body;
   try {
     const { group } = await groupService.createGroup(groupName, user);
-    res.status(201).send(group);
+    res.status(httpStatus.created).send(group);
   } catch (error) {
     next(error);
   }

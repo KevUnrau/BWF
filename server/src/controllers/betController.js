@@ -1,5 +1,6 @@
 import * as betRepository from "../repositories/betRepository.js";
 import * as betService from "../services/betService.js";
+import { httpStatus } from "../constants/httpStatus.js";
 
 export const getBets = async (req, res, next) => {
   try {
@@ -24,7 +25,7 @@ export const putBets = async (req, res, next) => {
     const user = req.user;
     const body = { ...req.body, user };
     await betService.putBets(body);
-    res.status(200).send(body);
+    res.status(httpStatus.ok).send(body);
   } catch (error) {
     next(error);
   }

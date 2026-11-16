@@ -1,6 +1,7 @@
 import * as sportService from "../services/sportService.js";
 import * as betRepository from "../repositories/betRepository.js";
 import * as betService from "../services/betService.js";
+import { httpStatus } from "../constants/httpStatus.js";
 
 export const getMatchdays = async (req, res, next) => {
   const sessionId = Number(req.params.id);
@@ -63,7 +64,7 @@ export const postSession = async (req, res, next) => {
   const body = req.body;
   try {
     await betService.createSession(body);
-    res.status(201).send(body);
+    res.status(httpStatus.created).send(body);
   } catch (error) {
     next(error);
   }
@@ -74,7 +75,7 @@ export const deleteSession = async (req, res, next) => {
   const name = req.query.session;
   try {
     await betRepository.deleteSession(groupId, name);
-    res.sendStatus(204);
+    res.sendStatus(httpStatus.noContent);
   } catch (error) {
     next(error);
   }
