@@ -1,4 +1,4 @@
-import { httpStatus } from "../constants/httpStatus";
+import { httpStatus } from "../constants/httpStatus.js";
 
 export const errorMessages = {
   app: "An error has occured.",
