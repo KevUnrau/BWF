@@ -17,6 +17,8 @@ vi.mock("../../../src/repositories/groupRepository.js", () => ({
   updateInvitationsReadStatus: vi.fn(),
   deleteInvitation: vi.fn(),
   findMember: vi.fn(),
+  findGroupsByUser: vi.fn(),
+  findGroupByName: vi.fn(),
 }));
 
 export default groupRepository;

@@ -74,7 +74,7 @@ export const deleteSession = async (req, res, next) => {
   const groupId = Number(req.query.groupId);
   const name = req.query.session;
   try {
-    await betRepository.deleteSession(groupId, name);
+    await betService.deleteSession(groupId, name);
     res.sendStatus(httpStatus.noContent);
   } catch (error) {
     next(error);

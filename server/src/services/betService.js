@@ -2,7 +2,7 @@ import prisma from "../prisma/client.js";
 import * as sportRepository from "../repositories/sportRepository.js";
 import * as betRepository from "../repositories/betRepository.js";
 import * as groupRepository from "../repositories/groupRepository.js";
-import { ConflictError } from "../errors/AppError.js";
+import { ConflictError, NotFoundError } from "../errors/AppError.js";
 
 export function calcBetPoints(
   matchHomeGoals,
@@ -23,7 +23,27 @@ export function calcBetPoints(
   return 0;
 }
 
-export function closeMatchday(body, recalculate) {
+export async function closeMatchday(body, recalculate) {
+  const status = await sportRepository.findMatchdayStatus(
+    body.competition,
+    body.season,
+    body.matchday.round,
+  );
+
+  if (!status) {
+    throw new NotFoundError("Matchday not found.");
+  }
+
+  if (!recalculate && status.match_status.name !== "in progress") {
+    throw new ConflictError(
+      "You can't close a matchday that is not in progress.",
+    );
+  }
+
+  if (recalculate && status.match_status.name !== "closed") {
+    throw new Error("You can't recalculate a matchday that is not closed.");
+  }
+
   return prisma.$transaction(async (tx) => {
     for (const match of body.matches) {
       await sportRepository.updateMatch({
@@ -71,7 +91,18 @@ export function closeMatchday(body, recalculate) {
   });
 }
 
-export function createSession(body) {
+export async function createSession(body) {
+  const session = await betRepository.findSessionByName(
+    body.groupId,
+    body.name,
+  );
+
+  if (session) {
+    throw new ConflictError(
+      "Session name already in use. Please choose a different one.",
+    );
+  }
+
   return prisma.$transaction(async (tx) => {
     const session = await betRepository.createSession(body, tx);
     const members = await groupRepository.findMembersByGroup(body.groupId, tx);
@@ -80,6 +111,16 @@ export function createSession(body) {
     });
     await betRepository.createStandings(session.id, users, tx);
   });
+}
+
+export async function deleteSession(groupId, sessionName) {
+  const session = await betRepository.findSessionByName(groupId, sessionName);
+
+  if (!session) {
+    throw new NotFoundError("Session does not exist.");
+  }
+
+  return betRepository.deleteSession(groupId, sessionName);
 }
 
 export async function putBets(body) {

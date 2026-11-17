@@ -1,11 +1,7 @@
 import { Router } from "express";
 import { auth, adminAuth } from "../middleware/auth.js";
 import * as matchdayController from "../controllers/matchdayController.js";
-import {
-  validate,
-  closeMatchdayValidation,
-  recalculateMatchdayValidation,
-} from "../middleware/validate.js";
+import { validate, closeMatchdayValidation } from "../middleware/validate.js";
 
 const router = Router();
 
@@ -20,7 +16,7 @@ router.post(
 
 router.post(
   "/recalculate",
-  validate(recalculateMatchdayValidation),
+  validate(closeMatchdayValidation),
   matchdayController.recalculateMatchday,
 );
 

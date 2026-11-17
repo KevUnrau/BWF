@@ -12,19 +12,43 @@ describe("hashSHA256", () => {
 });
 
 describe("createUser", () => {
-  it("creates a new user.", async () => {
-    const user = {
-      mail: mockUser.mail,
-      name: mockUser.username,
-      password: "password",
-    };
+  const user = {
+    mail: mockUser.mail,
+    name: mockUser.username,
+    password: "password",
+  };
 
+  it("throws a conflict error because the mail is already in use.", async () => {
+    authRepository.findUserByMail.mockResolvedValue(mockUser);
+
+    await expect(authService.createUser(user)).rejects.toThrow(
+      "This mail is already in use.",
+    );
+  });
+
+  it("throws a conflict error because the username is already in use.", async () => {
+    authRepository.findUserByMail.mockResolvedValue(null);
+    authRepository.findUserByName.mockResolvedValue(mockUser);
+
+    await expect(authService.createUser(user)).rejects.toThrow(
+      "This name is already in use. Please choose another one.",
+    );
+  });
+
+  it("creates a new user.", async () => {
     const passwordHash = "password-hash";
 
+    authRepository.findUserByMail.mockResolvedValue(null);
+    authRepository.findUserByName.mockResolvedValue(null);
     argon2.hash.mockResolvedValue(passwordHash);
     authRepository.createUser.mockResolvedValue();
 
     await authService.createUser(user);
+
+    expect(authRepository.findUserByMail).toHaveBeenCalledWith(mockUser.mail);
+    expect(authRepository.findUserByName).toHaveBeenCalledWith(
+      mockUser.username,
+    );
 
     expect(argon2.hash).toHaveBeenCalledWith(user.password);
     expect(authRepository.createUser).toHaveBeenCalledWith({

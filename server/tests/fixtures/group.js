@@ -39,3 +39,12 @@ export const mockInvitations = [
     read_at: null,
   },
 ];
+
+export const mockGroupMemberships = [
+  {
+    groups: { name: mockGroup.name },
+    mockMemberRole,
+    group_id: mockGroup.id,
+    role_id: groupRoles.member,
+  },
+];

@@ -4,6 +4,7 @@ import * as argon2 from "argon2";
 import env from "../config/env.js";
 import { InvalidCredentialsError } from "../errors/AppError.js";
 import crypto from "node:crypto";
+import { ConflictError } from "../errors/AppError.js";
 
 const accessSecret = new TextEncoder().encode(env.jwtAccessSecret);
 const refreshSecret = new TextEncoder().encode(env.jwtRefreshSecret);
@@ -13,6 +14,21 @@ export function hashSHA256(token) {
 }
 
 export async function createUser(body) {
+  const [mailExists, usernameExists] = await Promise.all([
+    authRepository.findUserByMail(body.mail),
+    authRepository.findUserByName(body.name),
+  ]);
+
+  if (mailExists) {
+    throw new ConflictError("This mail is already in use.");
+  }
+
+  if (usernameExists) {
+    throw new ConflictError(
+      "This name is already in use. Please choose another one.",
+    );
+  }
+
   const user = {
     username: body.name,
     mail: body.mail,

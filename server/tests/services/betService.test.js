@@ -4,7 +4,7 @@ import prisma, { tx } from "../mocks/modules/prisma.js";
 import groupRepository from "../mocks/repositories/groupRepository.js";
 import betRepository from "../mocks/repositories/betRepository.js";
 import sportRepository from "../mocks/repositories/sportRepository.js";
-import { mockMembers } from "../fixtures/group.js";
+import { mockGroup, mockMembers } from "../fixtures/group.js";
 import { mockMatches } from "../fixtures/sport.js";
 import { mockCalcStandings, mockBets, mockSession } from "../fixtures/bet.js";
 import * as betService from "../../src/services/betService.js";
@@ -100,16 +100,61 @@ describe("closeMatchday", () => {
     ],
   };
 
+  const recalculate = false;
+
   beforeEach(() => {
     betRepository.findBetsByMatch.mockResolvedValue(mockBets);
-
     betRepository.calcStandings.mockResolvedValue(mockCalcStandings);
   });
 
+  it("throws a not found error because the matchday does not exist.", async () => {
+    sportRepository.findMatchdayStatus.mockResolvedValue(null);
+
+    await expect(betService.closeMatchday(body, recalculate)).rejects.toThrow(
+      "Matchday not found.",
+    );
+
+    expect(sportRepository.findMatchdayStatus).toHaveBeenCalledWith(
+      body.competition,
+      body.season,
+      body.matchday.round,
+    );
+  });
+
+  it("throws a conflict error because the matchday is not in progress.", async () => {
+    sportRepository.findMatchdayStatus.mockResolvedValue({
+      match_status: { name: "closed" },
+    });
+
+    await expect(betService.closeMatchday(body, recalculate)).rejects.toThrow(
+      "You can't close a matchday that is not in progress.",
+    );
+  });
+
+  it("it throws a conflict error because the matchday is not closed.", async () => {
+    const recalculate = true;
+
+    sportRepository.findMatchdayStatus.mockResolvedValue({
+      match_status: { name: "in progress" },
+    });
+
+    await expect(betService.closeMatchday(body, recalculate)).rejects.toThrow(
+      "You can't recalculate a matchday that is not closed.",
+    );
+  });
+
   it("closes a matchday", async () => {
-    const recalculate = false;
+    sportRepository.findMatchdayStatus.mockResolvedValue({
+      match_status: { name: "in progress" },
+    });
 
     await betService.closeMatchday(body, recalculate);
+
+    expect(sportRepository.findMatchdayStatus).toHaveBeenCalledWith(
+      body.competition,
+      body.season,
+      body.matchday.round,
+    );
 
     expect(sportRepository.updateMatch).toHaveBeenCalledTimes(2);
     expect(sportRepository.updateMatch).toHaveBeenCalledWith({
@@ -158,6 +203,10 @@ describe("closeMatchday", () => {
   it("recalculates an already closed matchday", async () => {
     const recalculate = true;
 
+    sportRepository.findMatchdayStatus.mockResolvedValue({
+      match_status: { name: "closed" },
+    });
+
     await betService.closeMatchday(body, recalculate);
 
     expect(sportRepository.updateMatchdayStatus).not.toHaveBeenCalled();
@@ -165,14 +214,27 @@ describe("closeMatchday", () => {
 });
 
 describe("createSession", () => {
-  it("creates a betting session", async () => {
-    const body = {
-      groupId: 1,
-      competition: 1,
-      season: 1,
-      name: "testSession",
-    };
+  const body = {
+    groupId: 1,
+    competition: 1,
+    season: 1,
+    name: "testSession",
+  };
 
+  it("throws a conflict error because the session name is already in use.", async () => {
+    betRepository.findSessionByName.mockResolvedValue({ id: 1 });
+
+    await expect(betService.createSession(body)).rejects.toThrow(
+      "Session name already in use. Please choose a different one.",
+    );
+
+    expect(betRepository.findSessionByName).toHaveBeenCalledWith(
+      body.groupId,
+      body.name,
+    );
+  });
+
+  it("creates a betting session", async () => {
     const mockSession = {
       id: 10,
       group_id: body.groupId,
@@ -180,6 +242,8 @@ describe("createSession", () => {
       season_id: body.season,
       name: body.name,
     };
+
+    betRepository.findSessionByName.mockResolvedValue(null);
 
     betRepository.createSession.mockResolvedValue(mockSession);
 
@@ -198,6 +262,35 @@ describe("createSession", () => {
       mockSession.id,
       [{ id: mockMembers[0].user_id }, { id: mockMembers[1].user_id }],
       tx,
+    );
+  });
+});
+
+describe("deleteSession", () => {
+  const sessionName = "session";
+
+  it("throws a not found error because the session does not exist.", async () => {
+    betRepository.findSessionByName.mockResolvedValue(null);
+
+    await expect(
+      betService.deleteSession(mockGroup.id, sessionName),
+    ).rejects.toThrow("Session does not exist.");
+
+    expect(betRepository.findSessionByName).toHaveBeenCalledWith(
+      mockGroup.id,
+      sessionName,
+    );
+  });
+
+  it("deletes a session.", async () => {
+    betRepository.findSessionByName.mockResolvedValue({ id: 1 });
+    betRepository.deleteSession(mockGroup.id, sessionName);
+
+    betService.deleteSession(mockGroup.id, sessionName);
+
+    expect(betRepository.deleteSession).toHaveBeenCalledWith(
+      mockGroup.id,
+      sessionName,
     );
   });
 });

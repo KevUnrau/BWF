@@ -9,6 +9,7 @@ import {
   mockGroup,
   groupRoles,
   mockInvitations,
+  mockGroupMemberships,
 } from "../fixtures/group.js";
 import { mockUser } from "../fixtures/auth.js";
 import * as groupService from "../../src/services/groupService.js";
@@ -101,8 +102,8 @@ describe("removeMember", () => {
   const groupId = 13;
 
   beforeEach(() => {
+    groupRepository.findGroupsByUser.mockResolvedValue(mockGroupMemberships);
     betRepository.findSessions.mockResolvedValue(mockSessions);
-    authRepository.findUserByName.mockResolvedValue(mockUser);
     betRepository.deleteStanding.mockResolvedValue();
     betRepository.deleteBets.mockResolvedValue();
     groupRepository.deleteMember.mockResolvedValue();
@@ -110,15 +111,22 @@ describe("removeMember", () => {
     groupRepository.countAdmins.mockResolvedValue(1);
   });
 
-  it("removes a member using their username.", async () => {
+  it("throws a not found error because the user is not a member of the group.", async () => {
+    groupRepository.findGroupsByUser.mockResolvedValue([]);
+
+    await expect(
+      groupService.removeMember({
+        groupId: groupId,
+        userId: mockUser.id,
+      }),
+    ).rejects.toThrow("User is not a member of this group.");
+  });
+
+  it("removes a member.", async () => {
     await groupService.removeMember({
       groupId: groupId,
-      username: mockUser.username,
+      userId: mockUser.id,
     });
-
-    expect(authRepository.findUserByName).toHaveBeenCalledWith(
-      mockUser.username,
-    );
 
     expect(betRepository.findSessions).toHaveBeenCalledWith(groupId, tx);
 
@@ -156,20 +164,6 @@ describe("removeMember", () => {
     expect(groupRepository.updateMemberRole).not.toHaveBeenCalled();
   });
 
-  it("removes a member using their user id.", async () => {
-    await groupService.removeMember({
-      groupId: groupId,
-      userId: mockUser.id,
-    });
-
-    expect(authRepository.findUserByName).not.toHaveBeenCalled();
-    expect(groupRepository.deleteMember).toHaveBeenCalledWith(
-      groupId,
-      mockUser.id,
-      tx,
-    );
-  });
-
   it("removes the last member which results in group deletion.", async () => {
     groupRepository.deleteGroup.mockResolvedValue();
     groupRepository.findMembersByGroup.mockResolvedValue([]);
@@ -199,8 +193,52 @@ describe("removeMember", () => {
   });
 });
 
+describe("kickMember", () => {
+  it("throws a not found error because the user does not exist.", async () => {
+    const kickedUserName = "kickedUser";
+
+    authRepository.findUserByName.mockResolvedValue(null);
+
+    await expect(
+      groupService.kickMember({
+        groupId: mockGroup.id,
+        username: kickedUserName,
+        kickedBy: mockUser.id,
+      }),
+    ).rejects.toThrow("User does not exist.");
+  });
+
+  it("throws a forbidden error because the user tried to kick himself.", async () => {
+    authRepository.findUserByName.mockResolvedValue(mockUser);
+
+    await expect(
+      groupService.kickMember({
+        groupId: mockGroup.id,
+        username: mockUser.username,
+        kickedBy: mockUser.id,
+      }),
+    ).rejects.toThrow("You can't remove yourself.");
+  });
+});
+
 describe("createGroup", () => {
+  it("throws a conflict error because the group name already exists.", async () => {
+    groupRepository.findGroupByName.mockResolvedValue({ id: mockGroup.id });
+
+    await expect(
+      groupService.createGroup(mockGroup.name, mockUser.id),
+    ).rejects.toThrow(
+      "Please choose a different name. This Group already exists.",
+    );
+
+    expect(groupRepository.findGroupByName).toHaveBeenCalledWith(
+      mockGroup.name,
+    );
+  });
+
   it("creates a group and adds the group creator as admin to the group.", async () => {
+    groupRepository.findGroupByName.mockResolvedValue(null);
+
     groupRepository.createGroup.mockResolvedValue(mockGroup);
 
     const mockMember = {
@@ -231,11 +269,19 @@ describe("createGroup", () => {
 
 describe("createInvitation", () => {
   const invitedByUserId = 14;
+  const groupId = 14;
+
+  beforeEach(() => {
+    groupRepository.countMembers.mockResolvedValue(24);
+    authRepository.findUserByName.mockResolvedValue(mockUser);
+    groupRepository.findGroupsByUser.mockResolvedValue(mockGroupMemberships);
+  });
+
   it("throws a conflict error because the group is already full at 25 members.", async () => {
     groupRepository.countMembers.mockResolvedValue(25);
     await expect(
       groupService.createInvitation(
-        mockGroup.id,
+        groupId,
         mockUser.username,
         invitedByUserId,
       ),
@@ -244,17 +290,82 @@ describe("createInvitation", () => {
     );
   });
 
+  it("throws a not found error because the invited user does not exist.", async () => {
+    authRepository.findUserByName.mockResolvedValue();
+
+    await expect(
+      groupService.createInvitation(
+        groupId,
+        mockUser.username,
+        invitedByUserId,
+      ),
+    ).rejects.toThrow("User does not exist.");
+
+    expect(authRepository.findUserByName).toHaveBeenCalledWith(
+      mockUser.username,
+    );
+  });
+
+  it("throws a conflict error because the user tried to invite himself.", async () => {
+    const invitedUser = { ...mockUser };
+    invitedUser.id = invitedByUserId;
+    authRepository.findUserByName.mockResolvedValue(invitedUser);
+
+    await expect(
+      groupService.createInvitation(
+        groupId,
+        mockUser.username,
+        invitedByUserId,
+      ),
+    ).rejects.toThrow("You can't invite yourself.");
+  });
+
+  it("throws a conflict error because the invited user is already a member of this group.", async () => {
+    await expect(
+      groupService.createInvitation(
+        mockGroup.id,
+        mockUser.username,
+        invitedByUserId,
+      ),
+    ).rejects.toThrow("User is already a member of this group.");
+  });
+
+  it("throws a conflict error because the invited user already has an active invitation for this group.", async () => {
+    const invitationStatus = 1;
+    const systemTime = "2026-11-14T18:00:00.000Z";
+
+    vi.setSystemTime(systemTime);
+
+    groupRepository.findInvitationsByUser.mockResolvedValue(mockInvitations);
+
+    await expect(
+      groupService.createInvitation(
+        groupId,
+        mockUser.username,
+        invitedByUserId,
+      ),
+    ).rejects.toThrow("User already has an active invitation for this group.");
+
+    expect(groupRepository.findInvitationsByUser).toHaveBeenCalledWith(
+      mockUser.id,
+      invitationStatus,
+      new Date(systemTime).toISOString(),
+    );
+  });
+
   it("creates a group invitation.", async () => {
-    groupRepository.countMembers.mockResolvedValue(24);
-    authRepository.findUserByName.mockResolvedValue(mockUser);
+    groupRepository.findInvitationsByUser.mockResolvedValue([]);
+
     groupRepository.createInvitation.mockResolvedValue();
+
     await groupService.createInvitation(
-      mockGroup.id,
+      groupId,
       mockUser.username,
       invitedByUserId,
     );
+
     expect(groupRepository.createInvitation).toHaveBeenCalledWith(
-      mockGroup.id,
+      groupId,
       mockUser.id,
       invitedByUserId,
     );

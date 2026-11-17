@@ -1,7 +1,11 @@
 import * as groupRepository from "../repositories/groupRepository.js";
 import * as authRepository from "../repositories/authRepository.js";
 import * as betRepository from "../repositories/betRepository.js";
-import { ConflictError, ForbiddenError } from "../errors/AppError.js";
+import {
+  ConflictError,
+  ForbiddenError,
+  NotFoundError,
+} from "../errors/AppError.js";
 import prisma from "../prisma/client.js";
 
 export async function joinGroup(invitationId, groupId, userId) {
@@ -34,17 +38,23 @@ export async function joinGroup(invitationId, groupId, userId) {
   });
 }
 
-export async function removeMember({ groupId, username, userId }) {
-  const { id: memberId } = userId
-    ? { id: userId }
-    : await authRepository.findUserByName(username);
+export async function removeMember({ groupId, userId }) {
+  const groups = await groupRepository.findGroupsByUser(userId);
+  const isMember = groups.find((group) => {
+    return group.group_id === groupId;
+  });
+
+  if (!isMember) {
+    throw new NotFoundError("User is not a member of this group.");
+  }
+
   return prisma.$transaction(async (tx) => {
     const bettingSessions = await betRepository.findSessions(groupId, tx);
     for (const session of bettingSessions) {
-      await betRepository.deleteStanding(session.id, memberId, tx);
-      await betRepository.deleteBets(session.id, memberId, tx);
+      await betRepository.deleteStanding(session.id, userId, tx);
+      await betRepository.deleteBets(session.id, userId, tx);
     }
-    await groupRepository.deleteMember(groupId, memberId, tx);
+    await groupRepository.deleteMember(groupId, userId, tx);
     const members = await groupRepository.findMembersByGroup(groupId, tx);
     if (members.length === 0) {
       await groupRepository.deleteGroup(groupId, tx);
@@ -69,7 +79,33 @@ export async function removeMember({ groupId, username, userId }) {
   });
 }
 
-export function createGroup(name, userId) {
+export function leaveGroup({ groupId, userId }) {
+  return removeMember({ groupId, userId });
+}
+
+export async function kickMember({ groupId, username, kickedBy }) {
+  const user = await authRepository.findUserByName(username);
+
+  if (!user) {
+    throw new NotFoundError("User does not exist.");
+  }
+
+  if (user.id === kickedBy) {
+    throw new ForbiddenError("You can't remove yourself.");
+  }
+
+  return removeMember({ groupId, userId: user.id });
+}
+
+export async function createGroup(name, userId) {
+  const group = await groupRepository.findGroupByName(name);
+
+  if (group) {
+    throw new ConflictError(
+      "Please choose a different name. This Group already exists.",
+    );
+  }
+
   return prisma.$transaction(async (tx) => {
     const group = await groupRepository.createGroup(name, tx);
     const member = await groupRepository.createMember(group.id, userId, 1, tx);
@@ -88,7 +124,37 @@ export async function createInvitation(
       "Group is full. Please remove a member before inviting a new user.",
     );
   }
+
   const invitedUser = await authRepository.findUserByName(invitedUsername);
+
+  if (!invitedUser) {
+    throw new NotFoundError("User does not exist.");
+  }
+
+  if (invitedUser.id === invitedByUser) {
+    throw new ConflictError("You can't invite yourself.");
+  }
+
+  const groups = await groupRepository.findGroupsByUser(invitedUser.id);
+  const isMember = groups.find((group) => {
+    return group.group_id === groupId;
+  });
+
+  if (isMember) {
+    throw new ConflictError("User is already a member of this group.");
+  }
+
+  const activeInvitations = await groupRepository.findInvitationsByUser(
+    invitedUser.id,
+    1,
+    new Date().toISOString(),
+  );
+  if (activeInvitations.length > 0) {
+    throw new ConflictError(
+      "User already has an active invitation for this group.",
+    );
+  }
+
   return groupRepository.createInvitation(
     groupId,
     invitedUser.id,

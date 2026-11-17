@@ -25,10 +25,15 @@ export const getSessionsByGroup = async (req, res, next) => {
 };
 
 export const deleteMember = async (req, res, next) => {
+  const user = req.user;
   const groupId = Number(req.params.groupId);
   const memberName = req.query.member;
   try {
-    await groupService.removeMember({ groupId: groupId, username: memberName });
+    await groupService.kickMember({
+      groupId: groupId,
+      username: memberName,
+      kickedBy: user,
+    });
     res.sendStatus(httpStatus.noContent);
   } catch (error) {
     next(error);
@@ -49,7 +54,7 @@ export const leaveGroup = async (req, res, next) => {
   const user = req.user;
   const groupId = Number(req.params.groupId);
   try {
-    await groupService.removeMember({ groupId: groupId, userId: user });
+    await groupService.leaveGroup({ groupId, userId: user });
     res.sendStatus(httpStatus.noContent);
   } catch (error) {
     next(error);
