@@ -64,7 +64,16 @@ export async function closeMatchday(body, recalculate) {
       }
     }
     const standings = await betRepository.calcStandings(tx);
-    for (const standing of standings) {
+
+    // When calculating standings, users who only have bets for the
+    // open matchdays may have a null sum because no points
+    // have been awarded yet. Default to 0.
+    const cleanedStandings = standings.map((standing) => ({
+      ...standing,
+      _sum: { points: standing._sum.points ?? 0 },
+    }));
+
+    for (const standing of cleanedStandings) {
       await betRepository.updateStanding(
         standing.betting_session_id,
         standing.user_id,

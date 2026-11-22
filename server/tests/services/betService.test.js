@@ -183,6 +183,14 @@ describe("closeMatchday", () => {
       tx,
     );
 
+    //checks if null value for points has been transformed to 0
+    expect(betRepository.updateStanding).toHaveBeenCalledWith(
+      mockCalcStandings[1].betting_session_id,
+      mockCalcStandings[1].user_id,
+      0,
+      tx,
+    );
+
     expect(sportRepository.updateMatchdayStatus).toHaveBeenCalledWith({
       status: 2,
       matchday: "1",
