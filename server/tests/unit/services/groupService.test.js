@@ -1,18 +1,18 @@
 import { vi, describe, it, expect, beforeEach } from "vitest";
-import prisma, { tx } from "../mocks/modules/prisma.js";
-import groupRepository from "../mocks/repositories/groupRepository.js";
-import betRepository from "../mocks/repositories/betRepository.js";
-import authRepository from "../mocks/repositories/authRepository.js";
-import { mockSessions } from "../fixtures/repositories/bet.js";
+import prisma, { tx } from "../../mocks/modules/prisma.js";
+import groupRepository from "../../mocks/repositories/groupRepository.js";
+import betRepository from "../../mocks/repositories/betRepository.js";
+import authRepository from "../../mocks/repositories/authRepository.js";
+import { mockSessions } from "../../fixtures/repositories/bet.js";
 import {
   mockMembers,
   mockGroup,
   groupRoles,
   mockInvitations,
   mockGroupMemberships,
-} from "../fixtures/repositories/group.js";
-import { mockUser } from "../fixtures/repositories/auth.js";
-import * as groupService from "../../src/services/groupService.js";
+} from "../../fixtures/repositories/group.js";
+import { mockUser } from "../../fixtures/repositories/auth.js";
+import * as groupService from "../../../src/services/groupService.js";
 
 describe("joinGroup", () => {
   vi.setSystemTime(new Date("2026-11-20T19:30:00Z"));

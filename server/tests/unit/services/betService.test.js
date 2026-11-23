@@ -1,17 +1,17 @@
 import { vi, describe, it, expect, beforeEach } from "vitest";
 //important to import mock modules before the service, else the service uses the original modules
-import prisma, { tx } from "../mocks/modules/prisma.js";
-import groupRepository from "../mocks/repositories/groupRepository.js";
-import betRepository from "../mocks/repositories/betRepository.js";
-import sportRepository from "../mocks/repositories/sportRepository.js";
-import { mockGroup, mockMembers } from "../fixtures/repositories/group.js";
-import { mockMatches } from "../fixtures/repositories/sport.js";
+import prisma, { tx } from "../../mocks/modules/prisma.js";
+import groupRepository from "../../mocks/repositories/groupRepository.js";
+import betRepository from "../../mocks/repositories/betRepository.js";
+import sportRepository from "../../mocks/repositories/sportRepository.js";
+import { mockGroup, mockMembers } from "../../fixtures/repositories/group.js";
+import { mockMatches } from "../../fixtures/repositories/sport.js";
 import {
   mockCalcStandings,
   mockBets,
   mockSession,
-} from "../fixtures/repositories/bet.js";
-import * as betService from "../../src/services/betService.js";
+} from "../../fixtures/repositories/bet.js";
+import * as betService from "../../../src/services/betService.js";
 
 describe("calcBetPoints", () => {
   it("returns 3 for an exact prediction", () => {

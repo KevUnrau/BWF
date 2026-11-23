@@ -1,19 +1,19 @@
 import { vi, describe, it, expect, beforeEach } from "vitest";
-import { res, next } from "../mocks/modules/express.js";
-import { mockUserBody } from "../fixtures/requests/auth.js";
+import { res, next } from "../../mocks/modules/express.js";
+import { mockUserBody } from "../../fixtures/requests/auth.js";
 import {
   mockBetBody,
   mockCloseMatchdayBody,
-} from "../fixtures/requests/bet.js";
+} from "../../fixtures/requests/bet.js";
 import {
   mockInvitationBody,
   mockCreateGroupBody,
   mockRemoveUserQuery,
   mockCreateSessionBody,
   mockRemoveSessionQuery,
-} from "../fixtures/requests/group.js";
-import { ValidationError } from "../../src/errors/AppError";
-import * as validate from "../../src/middleware/validate.js";
+} from "../../fixtures/requests/group.js";
+import { ValidationError } from "../../../src/errors/AppError";
+import * as validate from "../../../src/middleware/validate.js";
 
 const req = {};
 

@@ -1,8 +1,8 @@
 import { vi, describe, it, expect, beforeEach } from "vitest";
-import authRepository from "../mocks/repositories/authRepository.js";
-import argon2 from "../mocks/modules/argon2.js";
-import { mockUser } from "../fixtures/repositories/auth.js";
-import * as authService from "../../src/services/authService.js";
+import authRepository from "../../mocks/repositories/authRepository.js";
+import argon2 from "../../mocks/modules/argon2.js";
+import { mockUser } from "../../fixtures/repositories/auth.js";
+import * as authService from "../../../src/services/authService.js";
 
 describe("hashSHA256", () => {
   it("returns a SHA-256-hash.", () => {

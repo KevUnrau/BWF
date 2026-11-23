@@ -1,8 +1,8 @@
 import { describe, it, expect } from "vitest";
-import sportRepository from "../mocks/repositories/sportRepository.js";
-import betRepository from "../mocks/repositories/betRepository.js";
-import { mockSession } from "../fixtures/repositories/bet.js";
-import * as sportService from "../../src/services/sportService.js";
+import sportRepository from "../../mocks/repositories/sportRepository.js";
+import betRepository from "../../mocks/repositories/betRepository.js";
+import { mockSession } from "../../fixtures/repositories/bet.js";
+import * as sportService from "../../../src/services/sportService.js";
 
 describe("getRoundsBySession", () => {
   it("selects the rounds/matchdays for a betting session which is always connected to a competition and season.", async () => {

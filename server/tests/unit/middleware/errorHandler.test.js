@@ -1,9 +1,9 @@
 import { vi, describe, it, expect } from "vitest";
-import { httpStatus } from "../../src/constants/httpStatus.js";
-import { next, res } from "../mocks/modules/express.js";
-import { errorMessages } from "../../src/errors/AppError.js";
-import * as errors from "../../src/errors/AppError.js";
-import { errorHandler } from "../../src/middleware/errorHandler.js";
+import { httpStatus } from "../../../src/constants/httpStatus.js";
+import { next, res } from "../../mocks/modules/express.js";
+import { errorMessages } from "../../../src/errors/AppError.js";
+import * as errors from "../../../src/errors/AppError.js";
+import { errorHandler } from "../../../src/middleware/errorHandler.js";
 
 describe("errorHandler", () => {
   const req = {};

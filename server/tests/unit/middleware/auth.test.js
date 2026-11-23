@@ -1,24 +1,24 @@
 import { vi, describe, it, expect } from "vitest";
-import authService from "../mocks/services/authService.js";
-import authRepository from "../mocks/repositories/authRepository.js";
-import groupRepository from "../mocks/repositories/groupRepository.js";
-import { next, res } from "../mocks/modules/express.js";
+import authService from "../../mocks/services/authService.js";
+import authRepository from "../../mocks/repositories/authRepository.js";
+import groupRepository from "../../mocks/repositories/groupRepository.js";
+import { next, res } from "../../mocks/modules/express.js";
 import {
   mockGroup,
   mockMemberRole,
   mockAdminRole,
-} from "../fixtures/repositories/group.js";
+} from "../../fixtures/repositories/group.js";
 import {
   mockUser,
   mockAdminUser,
   mockNonAdminUser,
-} from "../fixtures/repositories/auth.js";
+} from "../../fixtures/repositories/auth.js";
 import {
   InvalidCredentialsError,
   TokenExpiredError,
   ForbiddenError,
-} from "../../src/errors/AppError.js";
-import * as auth from "../../src/middleware/auth.js";
+} from "../../../src/errors/AppError.js";
+import * as auth from "../../../src/middleware/auth.js";
 
 describe("extractGroup", () => {
   it.each([
