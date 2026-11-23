@@ -18,7 +18,7 @@ export const mockBetBody = {
 export const mockCloseMatchdayBody = {
   competition: 2,
   season: 1,
-  matchday: { round: "1", status_id: 2, match_status: { name: "in progress" } },
+  matchday: { round: "1", status_id: 3, match_status: { name: "in progress" } },
   matches: [
     { id: 345, homeGoals: 1, awayGoals: 2 },
     { id: 346, homeGoals: 1, awayGoals: 2 },
