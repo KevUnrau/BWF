@@ -3,8 +3,16 @@ import authService from "../mocks/services/authService.js";
 import authRepository from "../mocks/repositories/authRepository.js";
 import groupRepository from "../mocks/repositories/groupRepository.js";
 import { next, res } from "../mocks/modules/express.js";
-import { mockGroup, mockMemberRole, mockAdminRole } from "../fixtures/group.js";
-import { mockUser, mockAdminUser, mockNonAdminUser } from "../fixtures/auth.js";
+import {
+  mockGroup,
+  mockMemberRole,
+  mockAdminRole,
+} from "../fixtures/repositories/group.js";
+import {
+  mockUser,
+  mockAdminUser,
+  mockNonAdminUser,
+} from "../fixtures/repositories/auth.js";
 import {
   InvalidCredentialsError,
   TokenExpiredError,
@@ -124,7 +132,7 @@ describe("adminAuth", () => {
 describe("groupMemberAuth", () => {
   const req = { user: mockUser.id, params: { groupId: String(mockGroup.id) } };
 
-  it("throws a forbidden error because the user is not a member of the group.", async () => {
+  it("calls error handler with a forbidden error because the user is not a member of the group.", async () => {
     groupRepository.findMember.mockResolvedValue(null);
 
     await auth.groupMemberAuth(req, res, next);
@@ -156,7 +164,7 @@ describe("groupMemberAuth", () => {
 describe("groupAdminAuth", () => {
   const req = { user: mockUser.id, params: { groupId: String(mockGroup.id) } };
 
-  it("throws a forbidden error because the user is not a member of the group.", async () => {
+  it("calls error handler with a forbidden error because the user is not a member of the group.", async () => {
     groupRepository.findMember.mockResolvedValue(null);
 
     await auth.groupAdminAuth(req, res, next);
@@ -170,7 +178,7 @@ describe("groupAdminAuth", () => {
     expect(next).toHaveBeenCalledWith(expect.any(ForbiddenError));
   });
 
-  it("throws a forbidden error because the user is a member but not an admin of the group.", async () => {
+  it("calls error handler with a forbidden error because the user is a member but not an admin of the group.", async () => {
     groupRepository.findMember.mockResolvedValue(mockMemberRole);
 
     await auth.groupAdminAuth(req, res, next);

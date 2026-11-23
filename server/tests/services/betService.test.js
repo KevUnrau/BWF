@@ -4,9 +4,13 @@ import prisma, { tx } from "../mocks/modules/prisma.js";
 import groupRepository from "../mocks/repositories/groupRepository.js";
 import betRepository from "../mocks/repositories/betRepository.js";
 import sportRepository from "../mocks/repositories/sportRepository.js";
-import { mockGroup, mockMembers } from "../fixtures/group.js";
-import { mockMatches } from "../fixtures/sport.js";
-import { mockCalcStandings, mockBets, mockSession } from "../fixtures/bet.js";
+import { mockGroup, mockMembers } from "../fixtures/repositories/group.js";
+import { mockMatches } from "../fixtures/repositories/sport.js";
+import {
+  mockCalcStandings,
+  mockBets,
+  mockSession,
+} from "../fixtures/repositories/bet.js";
 import * as betService from "../../src/services/betService.js";
 
 describe("calcBetPoints", () => {

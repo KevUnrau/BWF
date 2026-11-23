@@ -26,7 +26,7 @@ export const mockSession = {
 
 export const mockCalcStandings = [
   { betting_session_id: 1, user_id: 1, _sum: { points: 4 } },
-  { betting_session_id: 1, user_id: 2, _sum: { points: 8 } },
+  { betting_session_id: 1, user_id: 2, _sum: { points: null } },
 ];
 
 export const mockBets = [
