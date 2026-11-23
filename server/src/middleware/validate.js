@@ -17,37 +17,26 @@ export const validate = (validations) => {
   };
 };
 
-const usernameValidationChain = (field, validator = body) => {
+const nameValidationChain = (field, minLength, maxLength, validator = body) => {
   return validator(field)
-    .isLength({ min: 4, max: 30 })
-    .withMessage("Plesae choose a username between 4 and 30 characters.")
-    .matches(/^[a-zA-Z0-9_]+$/)
-    .withMessage("Username can only contain letters, numbers and underscores.");
-};
-
-const sessionValidationChain = (field, validator = body) => {
-  return validator(field)
-    .isLength({ min: 2, max: 30 })
-    .withMessage("Please choose a session name between 2 and 30 characters.")
-    .matches(/^[a-zA-Z0-9_]+$/)
+    .trim()
+    .isLength({ min: minLength, max: maxLength })
     .withMessage(
-      "Session name can only contain letters, numbers and underscores.",
-    );
+      `Name must be between ${minLength} and ${maxLength} characters.`,
+    )
+    .matches(/^[a-zA-Z0-9_]+$/)
+    .withMessage("Name can only contain letters, numbers and underscores.");
 };
 
 const goalValidationChain = (field) => {
   return body(field)
     .isInt({ min: 0, max: 50 })
-    .withMessage("Goals must be a whole number between 0 and 50.");
+    .withMessage("Goals must be a whole number between 0 and 50.")
+    .toInt();
 };
 
 export const userValidation = [
-  body("mail")
-    .trim()
-    .isEmail()
-    .withMessage("This is not a valid mail.")
-    .isLength({ max: 254 })
-    .withMessage("Email is too long."),
+  body("mail").trim().isEmail().withMessage("This is not a valid mail."),
   body("password")
     .isLength({ min: 8 })
     .withMessage("Password needs at least 8 characters.")
@@ -55,7 +44,7 @@ export const userValidation = [
     .withMessage("Password needs to contain at least one number.")
     .matches("[A-Z]")
     .withMessage("Password needs to contain at least one capital letter."),
-  usernameValidationChain("name"),
+  nameValidationChain("name", 4, 30),
 ];
 
 export const betValidation = [
@@ -68,22 +57,16 @@ export const closeMatchdayValidation = [
   goalValidationChain("matches.*.awayGoals"),
 ];
 
-export const invitationValidation = [usernameValidationChain("invited")];
+export const invitationValidation = [nameValidationChain("invited", 4, 30)];
 
-export const groupValidation = [
-  body("groupName")
-    .isLength({ min: 4, max: 50 })
-    .withMessage("Please choose a group name between 4 and 50 characters.")
-    .matches(/^[a-zA-Z0-9_]+$/)
-    .withMessage(
-      "Group name can only contain letters, numbers and underscores.",
-    ),
+export const groupValidation = [nameValidationChain("groupName", 4, 30)];
+
+export const removeUserValidation = [
+  nameValidationChain("member", 4, 30, query),
 ];
 
-export const removeUserValidation = [usernameValidationChain("member", query)];
-
-export const sessionValidation = [sessionValidationChain("name")];
+export const sessionValidation = [nameValidationChain("name", 2, 30)];
 
 export const removeSessionValidation = [
-  sessionValidationChain("session", query),
+  nameValidationChain("session", 2, 30, query),
 ];
