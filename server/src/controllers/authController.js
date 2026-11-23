@@ -2,7 +2,7 @@ import * as authService from "../services/authService.js";
 import env from "../config/env.js";
 import { httpStatus } from "../constants/httpStatus.js";
 
-const cookieProps = {
+export const cookieProps = {
   httpOnly: true, // Prevents client-side JS from reading the cookie (XSS protection)
   secure: env.nodeEnv === "production", // Only send over HTTPS in production
   sameSite: "lax", // Protects against CSRF attacks ('strict' or 'lax')

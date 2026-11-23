@@ -5,6 +5,8 @@ export const res = {
   json: vi.fn(),
   send: vi.fn(),
   sendStatus: vi.fn(),
+  cookie: vi.fn(),
+  clearCookie: vi.fn(),
 };
 
 export const next = vi.fn();

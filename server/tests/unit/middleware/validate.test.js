@@ -1,6 +1,6 @@
 import { vi, describe, it, expect, beforeEach } from "vitest";
 import { res, next } from "../../mocks/modules/express.js";
-import { mockUserBody } from "../../fixtures/requests/auth.js";
+import { mockCreateUserBody } from "../../fixtures/requests/auth.js";
 import {
   mockBetBody,
   mockCloseMatchdayBody,
@@ -53,7 +53,7 @@ describe("validate", () => {
 
 describe("userValidation", () => {
   beforeEach(() => {
-    req.body = { ...mockUserBody };
+    req.body = { ...mockCreateUserBody };
   });
 
   it.each([
@@ -95,9 +95,9 @@ describe("userValidation", () => {
   ])(
     "calls the error handler with a validation error because $description",
     async ({
-      mail = mockUserBody.mail,
-      username = mockUserBody.name,
-      password = mockUserBody.password,
+      mail = mockCreateUserBody.mail,
+      username = mockCreateUserBody.name,
+      password = mockCreateUserBody.password,
       expected,
     }) => {
       req.body.password = password;
@@ -112,12 +112,12 @@ describe("userValidation", () => {
   );
 
   it("validates a user, trims the mail and username and calls the next middleware.", async () => {
-    req.body.mail = " " + mockUserBody.mail + " ";
-    req.body.name = " " + mockUserBody.name + " ";
+    req.body.mail = " " + mockCreateUserBody.mail + " ";
+    req.body.name = " " + mockCreateUserBody.name + " ";
 
     await validate.validate(validate.userValidation)(req, res, next);
 
-    expect(req.body).toStrictEqual(mockUserBody);
+    expect(req.body).toStrictEqual(mockCreateUserBody);
 
     expect(next).toHaveBeenCalledOnce();
     expect(next).toHaveBeenCalledWith();
