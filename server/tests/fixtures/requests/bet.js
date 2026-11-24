@@ -31,3 +31,9 @@ export const mockCloseMatchdayBody = {
     { id: 353, homeGoals: 1, awayGoals: 2 },
   ],
 };
+
+export const mockGetBetsQuery = {
+  bettingSessionId: "7",
+  round: "9",
+  groupId: "1",
+};

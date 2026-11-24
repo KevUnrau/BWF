@@ -15,6 +15,7 @@ vi.mock("../../../src/repositories/betRepository.js", () => ({
   deleteStanding: vi.fn(),
   deleteBets: vi.fn(),
   deleteSession: vi.fn(),
+  findBets: vi.fn(),
 }));
 
 export default betRepository;
