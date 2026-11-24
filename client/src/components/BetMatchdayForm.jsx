@@ -20,7 +20,7 @@ function BetMatchdayForm({ matchday, session, group }) {
             `/sessions/${session}/matches?round=${matchday.round}&groupId=${group}`,
           ),
           apiFetch(
-            `/sessions/${session}/bets?&round=${matchday.round}&groupId=${group}`,
+            `/sessions/${session}/bets?round=${matchday.round}&groupId=${group}`,
           ),
         ]);
         if (bets.length > 0) {
