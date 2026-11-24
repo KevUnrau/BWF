@@ -134,3 +134,38 @@ export const mockMatches = [
     away_goals: null,
   },
 ];
+
+export const mockCompetitions = [
+  {
+    id: 1,
+    name: "Bundesliga",
+    logo_filename:
+      "/images/competitions/germany_bundesliga.football-logos.cc.svg",
+  },
+];
+
+export const mockSeasons = [{ id: 1, name: "26/27" }];
+
+export const mockFindRounds = [
+  {
+    round: "1",
+    status_id: 2,
+    match_status: {
+      name: "closed",
+    },
+  },
+  {
+    round: "2",
+    status_id: 3,
+    match_status: {
+      name: "in progress",
+    },
+  },
+  {
+    round: "3",
+    status_id: 1,
+    match_status: {
+      name: "open",
+    },
+  },
+];

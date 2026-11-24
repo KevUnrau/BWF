@@ -7,6 +7,8 @@ vi.mock("../../../src/repositories/sportRepository.js", () => ({
   findMatches: vi.fn(),
   findMatchdayStatus: vi.fn(),
   findRounds: vi.fn(),
+  findCompetitions: vi.fn(),
+  findSeasonsByCompetition: vi.fn(),
 }));
 
 export default sportRepository;
