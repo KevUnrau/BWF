@@ -8,10 +8,11 @@ import { mockGetBetsQuery, mockBetBody } from "../../fixtures/requests/bet.js";
 import * as betController from "../../../src/controllers/betController.js";
 import { httpStatus } from "../../../src/constants/httpStatus.js";
 
-const req = { user: mockUser.id };
+let req = {};
 
 describe("getBets", () => {
   beforeEach(() => {
+    req = { user: mockUser.id };
     req.query = { ...mockGetBetsQuery };
   });
 
@@ -50,6 +51,7 @@ describe("getBets", () => {
 
 describe("putBets", () => {
   beforeEach(() => {
+    req = { user: mockUser.id };
     req.body = structuredClone(mockBetBody);
   });
 

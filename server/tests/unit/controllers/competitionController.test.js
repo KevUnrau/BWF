@@ -15,9 +15,13 @@ import {
 } from "../../fixtures/requests/competition.js";
 import * as competitionController from "../../../src/controllers/competitionController.js";
 
-const req = {};
+let req = {};
 
 describe("getCompetitions", () => {
+  beforeEach(() => {
+    req = {};
+  });
+
   it("calls the error handler because the find competitions query failed.", async () => {
     sportRepository.findCompetitions.mockRejectedValue(new Error());
 
@@ -38,6 +42,7 @@ describe("getCompetitions", () => {
 
 describe("getSeasons", () => {
   beforeEach(() => {
+    req = {};
     req.params = { ...mockGetSeasonsParams };
   });
 
@@ -63,6 +68,7 @@ describe("getSeasons", () => {
 
 describe("getMatchdays", () => {
   beforeEach(() => {
+    req = {};
     req.params = { ...mockGetMatchdaysParams };
   });
 
@@ -91,6 +97,7 @@ describe("getMatchdays", () => {
 
 describe("getMatches", () => {
   beforeEach(() => {
+    req = {};
     req.params = { ...mockGetMatchesParams };
     req.query = { ...mockGetMatchesQuery };
   });

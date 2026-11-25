@@ -14,10 +14,11 @@ import authService from "../../mocks/services/authService.js";
 import { res, next } from "../../mocks/modules/express.js";
 import * as authController from "../../../src/controllers/authController.js";
 
-const req = {};
+let req = {};
 
 describe("signUp", () => {
   beforeEach(() => {
+    req = {};
     req.body = { ...mockCreateUserBody };
     authService.createUser.mockResolvedValue(mockUser);
   });
@@ -70,6 +71,7 @@ describe("signUp", () => {
 
 describe("signIn", () => {
   beforeEach(() => {
+    req = {};
     req.body = { ...mockSignInBody };
   });
 
@@ -108,6 +110,7 @@ describe("signIn", () => {
 
 describe("signOut", () => {
   it("revokes the users session, clears refresh token cookie and returns success code.", async () => {
+    req = {};
     req.cookies = { refreshToken: "refreshToken" };
 
     authService.revokeSession.mockResolvedValue();
@@ -129,6 +132,7 @@ describe("signOut", () => {
 
 describe("refresh", () => {
   beforeEach(() => {
+    req = {};
     req.cookies = { refreshToken: "refreshToken" };
   });
 
