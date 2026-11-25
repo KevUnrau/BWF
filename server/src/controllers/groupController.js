@@ -5,7 +5,7 @@ import { httpStatus } from "../constants/httpStatus.js";
 
 export const getGroupsByUser = async (req, res, next) => {
   try {
-    const userId = Number(req.user);
+    const userId = req.user;
     const groups = await groupRepository.findGroupsByUser(userId);
 
     res.send(groups);

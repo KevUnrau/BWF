@@ -13,4 +13,12 @@ export const mockCreateSessionBody = {
   name: "sessionName",
 };
 
-export const mockRemoveSessionQuery = { session: "sessionName", groupId: 7 };
+export const mockRemoveSessionQuery = { session: "sessionName", groupId: "7" };
+
+export const mockGetSessionsByGroupParams = { groupId: "1" };
+
+export const mockDeleteGroupParams = { groupId: "1" };
+
+export const mockLeaveGroupParams = { groupId: "1" };
+
+export const mockGetUserRoleParams = { groupId: "1" };
