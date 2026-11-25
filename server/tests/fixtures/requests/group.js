@@ -1,8 +1,10 @@
 export const mockInvitationBody = { invited: "testUser", groupId: 7 };
 
-export const mockCreateGroupBody = { groupName: "test" };
+export const mockPostGroupBody = { groupName: "test" };
 
-export const mockRemoveUserQuery = { member: "test" };
+export const mockDeleteMemberQuery = { member: "test" };
+
+export const mockDeleteMemberParams = { groupId: "1" };
 
 export const mockCreateSessionBody = {
   groupId: 7,

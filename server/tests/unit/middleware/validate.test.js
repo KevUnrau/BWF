@@ -7,8 +7,8 @@ import {
 } from "../../fixtures/requests/bet.js";
 import {
   mockInvitationBody,
-  mockCreateGroupBody,
-  mockRemoveUserQuery,
+  mockPostGroupBody,
+  mockDeleteMemberQuery,
   mockCreateSessionBody,
   mockRemoveSessionQuery,
 } from "../../fixtures/requests/group.js";
@@ -216,7 +216,7 @@ describe("invitationValidation", () => {
 
 describe("groupValidation", () => {
   beforeEach(() => {
-    req.body = { ...mockCreateGroupBody };
+    req.body = { ...mockPostGroupBody };
   });
 
   it("calls the error handler with a validation error because the group name is too short.", async () => {
@@ -240,7 +240,7 @@ describe("groupValidation", () => {
 
 describe("removeUserValidation", () => {
   beforeEach(() => {
-    req.query = { ...mockRemoveUserQuery };
+    req.query = { ...mockDeleteMemberQuery };
   });
 
   it("calls the error handler with a validation error because the username is too short.", async () => {
