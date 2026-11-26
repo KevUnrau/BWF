@@ -1,10 +1,8 @@
 import { vi, describe, it, expect, beforeEach } from "vitest";
 import { res, next } from "../../mocks/modules/express.js";
 import { mockCreateUserBody } from "../../fixtures/requests/auth.js";
-import {
-  mockBetBody,
-  mockCloseMatchdayBody,
-} from "../../fixtures/requests/bet.js";
+import { mockBetBody } from "../../fixtures/requests/bet.js";
+import { mockCloseMatchdayBody } from "../../fixtures/requests/matchday.js";
 import {
   mockPostGroupBody,
   mockDeleteMemberQuery,
