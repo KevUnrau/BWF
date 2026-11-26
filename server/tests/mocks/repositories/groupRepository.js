@@ -19,6 +19,7 @@ vi.mock("../../../src/repositories/groupRepository.js", () => ({
   findMember: vi.fn(),
   findGroupsByUser: vi.fn(),
   findGroupByName: vi.fn(),
+  countUnreadInvitationsByUser: vi.fn(),
 }));
 
 export default groupRepository;

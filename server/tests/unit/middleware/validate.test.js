@@ -6,12 +6,12 @@ import {
   mockCloseMatchdayBody,
 } from "../../fixtures/requests/bet.js";
 import {
-  mockInvitationBody,
   mockPostGroupBody,
   mockDeleteMemberQuery,
   mockCreateSessionBody,
   mockRemoveSessionQuery,
 } from "../../fixtures/requests/group.js";
+import { mockInvitationBody } from "../../fixtures/requests/invitation.js";
 import { ValidationError } from "../../../src/errors/AppError";
 import * as validate from "../../../src/middleware/validate.js";
 

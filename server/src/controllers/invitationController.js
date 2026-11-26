@@ -3,7 +3,7 @@ import * as groupService from "../services/groupService.js";
 import { httpStatus } from "../constants/httpStatus.js";
 
 export const getInvitiationsByUser = async (req, res, next) => {
-  const userId = Number(req.user);
+  const userId = req.user;
   try {
     const invitations = await groupService.readInvitations(userId);
     res.send(invitations);
@@ -13,7 +13,7 @@ export const getInvitiationsByUser = async (req, res, next) => {
 };
 
 export const getUnreadInvitationsCount = async (req, res, next) => {
-  const user = Number(req.user);
+  const user = req.user;
   try {
     const unreadInvitations =
       await groupRepository.countUnreadInvitationsByUser(user);
@@ -23,7 +23,7 @@ export const getUnreadInvitationsCount = async (req, res, next) => {
   }
 };
 
-export const putInvitationsResponse = async (req, res, next) => {
+export const putInvitationResponse = async (req, res, next) => {
   const body = req.body;
   if (body.status === "accepted") {
     try {

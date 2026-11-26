@@ -13,7 +13,7 @@ router.delete("/", invitationController.deleteInvitation);
 
 router.get("/unread/count", invitationController.getUnreadInvitationsCount);
 
-router.put("/response", invitationController.putInvitationsResponse);
+router.put("/response", invitationController.putInvitationResponse);
 
 router.use(groupAdminAuth);
 

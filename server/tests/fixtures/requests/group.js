@@ -1,5 +1,3 @@
-export const mockInvitationBody = { invited: "testUser", groupId: 7 };
-
 export const mockPostGroupBody = { groupName: "test" };
 
 export const mockDeleteMemberQuery = { member: "test" };
